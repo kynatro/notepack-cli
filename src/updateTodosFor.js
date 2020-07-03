@@ -1,11 +1,8 @@
-'use strict'
-
 var { getTodos, getTodosAssignedTo } = require('./todos')
 var argv = require('yargs').argv
 var fs = require('fs')
 var path = require('path')
-var cwd = path.dirname(__dirname)
-var { PEOPLE_ALIASES, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants')
+var { CWD, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants')
 
 function getGroupNames(todos) {
   // Sort todos by date before grouping to ensure groups are ordered by date
@@ -38,7 +35,7 @@ function groupedTodos(todos, filePath, options = {}) {
   groupNames.forEach(groupName => {
     const groupTodos = todos.filter((todo) => todo.groupName === groupName).sort((a, b) => a.id > b.id ? 1 : -1)
     // Get relative path to ensure links are correct
-    const relativeFilePath = path.relative(path.dirname(filePath), path.join(cwd, groupTodos[0].filePath))
+    const relativeFilePath = path.relative(path.dirname(filePath), path.join(CWD, groupTodos[0].filePath))
     const groupPath = encodeURIComponent(relativeFilePath).replace(/%2F/g, '/')
 
     groupedStr = `${groupedStr}\n${TODO_GROUP_HEADING_LEVEL} [${groupName}](${groupPath})\n${
@@ -62,12 +59,12 @@ function groupedTodos(todos, filePath, options = {}) {
 function updateTodosForFolders(folders = []) {
   const isValidFolder = (nodePathName) => (
     !nodePathName.toLowerCase().includes('archive') &&
-    !nodePathName.startsWith(path.join(cwd, TEAM_FOLDER))
+    !nodePathName.startsWith(path.join(CWD, TEAM_FOLDER))
   )
 
   folders.forEach(folder => {
-    fs.readdirSync(path.resolve(cwd, folder)).forEach((node) => {
-      const nodePathName = path.resolve(cwd, folder, node)
+    fs.readdirSync(path.resolve(CWD, folder)).forEach((node) => {
+      const nodePathName = path.resolve(CWD, folder, node)
       const nodeStats = fs.statSync(nodePathName)
 
       if (nodeStats.isDirectory() && isValidFolder(nodePathName)) {
@@ -100,14 +97,15 @@ function updateTodosForFolders(folders = []) {
  */
 function updateTodosForPerson(assignedTo = 'me') {
   // Attempt to get by alias
-  const person = PEOPLE_ALIASES[assignedTo.toLowerCase()] || assignedTo
-  const alias = Object.keys(PEOPLE_ALIASES).find(key => PEOPLE_ALIASES[key] === assignedTo) || assignedTo
+  const aliases = getTeamMemberAliases();
+  const person = aliases[assignedTo.toLowerCase()] || assignedTo
+  const alias = Object.keys(aliases).find(key => aliases[key] === assignedTo) || assignedTo
   const todos = getTodosAssignedTo(alias)
 
   // Compose filePath based on assignedTo for either an person or root for mine
-  let filePath = path.join(cwd, TEAM_FOLDER, person, 'README.md')
+  let filePath = path.join(CWD, TEAM_FOLDER, person, 'README.md')
   if (['me', 'mine'].includes(assignedTo.toLowerCase())) {
-    filePath = path.join(cwd, 'README.md')
+    filePath = path.join(CWD, 'README.md')
   }
 
   writeTodos(filePath, todos)

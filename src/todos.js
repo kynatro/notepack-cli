@@ -1,11 +1,10 @@
-'use strict'
-
-var argv = require('yargs').argv
-var fs = require('fs')
-var path = require('path')
-var fm = require('front-matter')
-var cwd = path.dirname(__dirname)
-var { FILE_IGNORE, MATCH_PATTERN, PEOPLE_ALIASES } = require('./constants')
+const argv = require('yargs').argv;
+const fs = require('fs');
+const path = require('path');
+const fm = require('front-matter');
+const { isValidNode } = require('./helpers');
+const { getTeamMemberAliases } = require('./team');
+const { APP_ROOT_FOLDER, MATCH_PATTERN } = require('./constants');
 
 /**
  * Clean todo string
@@ -17,7 +16,7 @@ var { FILE_IGNORE, MATCH_PATTERN, PEOPLE_ALIASES } = require('./constants')
  * @returns {String}
  */
 function cleanTodo(todo) {
-  return `${todo}`.replace(new RegExp(MATCH_PATTERN), '').trim()
+  return `${todo}`.replace(new RegExp(MATCH_PATTERN), '').trim();
 }
 
 /**
@@ -29,7 +28,7 @@ function cleanTodo(todo) {
  * @returns {String}
  */
 function formatAssignment(assignment) {
-  return assignment.replace(/^@/, '').toLowerCase()
+  return assignment.replace(/^@/, '').toLowerCase();
 }
 
 /**
@@ -44,13 +43,13 @@ function formatAssignment(assignment) {
  * @returns {String}
  */
 function getAssignment(todo) {
-  const formattedTodo = cleanTodo(todo)
-  const mentionAssignment = formattedTodo.match(/^@([A-Za-z]+)/)
+  const formattedTodo = cleanTodo(todo);
+  const mentionAssignment = formattedTodo.match(/^@([A-Za-z]+)/);
 
   if (mentionAssignment) {
-    return mentionAssignment[1]
+    return mentionAssignment[1];
   } else {
-    return 'Me'
+    return 'Me';
   }
 }
 
@@ -64,7 +63,9 @@ function getAssignment(todo) {
  * @returns {String}
  */
 function getAssignmentAlias(assignment) {
-  return PEOPLE_ALIASES[formatAssignment(assignment)] || assignment
+  const aliases = getTeamMemberAliases();
+
+  return aliases[formatAssignment(assignment)] || assignment;
 }
 
 /**
@@ -81,35 +82,39 @@ function getAssignmentAlias(assignment) {
  *   groupName {String} A group name for the todo
  *   todo {String} The cleaned todo
  *   assignedTo {String} The individual the todo is assigned to
- *
+ * 
+ * @requires fm
+ * @requires fs
+ * @requires path
+ * @requires notepack/helpers.isValidNode
  * @param {String} [pathScope=''] The path to scan for todos
  * @param {Array} [todos=[]] The array of todos to populate
  * @returns {Array}
  */
 function getTodos(pathScope = '', todos = []) {
-  let id = 1
+  let id = 1;
 
-  fs.readdirSync(path.resolve(cwd, pathScope)).forEach((node) => {
-    const nodePathname = path.resolve(cwd, pathScope, node)
-    const nodeStats = fs.statSync(nodePathname)
-    const extname = path.extname(node)
+  fs.readdirSync(path.resolve(APP_ROOT_FOLDER, pathScope)).forEach((node) => {
+    const nodePathname = path.resolve(APP_ROOT_FOLDER, pathScope, node);
+    const nodeStats = fs.statSync(nodePathname);
+    const extname = path.extname(node);
 
     if (isValidNode(node)) {
       if (nodeStats.isFile() && extname === '.md') {
-        const src = fs.readFileSync(nodePathname, 'utf8')
-        const matches = src.match(new RegExp(`${MATCH_PATTERN}.*`, 'g'))
-        const frontMatter = fm(src)
+        const src = fs.readFileSync(nodePathname, 'utf8');
+        const matches = src.match(new RegExp(`${MATCH_PATTERN}.*`, 'g'));
+        const frontMatter = fm(src);
 
         if (matches && !frontMatter.attributes.excludeTodos) {
           matches.forEach((match) => {
-            let fileDate = node.match(/^\d{4}(-\d{2}){0,2}/)
+            let fileDate = node.match(/^\d{4}(-\d{2}){0,2}/);
             if (fileDate && fileDate.length) {
-              fileDate = fileDate[0]
+              fileDate = fileDate[0];
             }
 
             todos.push({
               id: id++,
-              filePath: nodePathname.replace(cwd, '.'),
+              filePath: nodePathname.replace(APP_ROOT_FOLDER, '.'),
               fileName: node,
               groupName: groupName(nodePathname),
               todo: cleanTodo(match),
@@ -117,16 +122,16 @@ function getTodos(pathScope = '', todos = []) {
               assignedToAlias: getAssignmentAlias(match),
               fileCreateTime: nodeStats.birthtime || nodeStats.ctime,
               fileDate
-            })
-          })
+            });
+          });
         }
       } else if (nodeStats.isDirectory()) {
-        todos = getTodos(nodePathname, todos)
+        todos = getTodos(nodePathname, todos);
       }
     }
   })
 
-  return todos
+  return todos;
 }
 
 /**
@@ -139,13 +144,13 @@ function getTodos(pathScope = '', todos = []) {
  * @returns
  */
 function getTodosAssignedTo(assignment) {
-  const formattedAssignment = formatAssignment(assignment)
-  const todos = getTodos()
+  const formattedAssignment = formatAssignment(assignment);
+  const todos = getTodos();
 
   return todos.filter(todo => (
     todo.assignedTo.toLowerCase() === formattedAssignment ||
     todo.assignedToAlias.toLowerCase() === formattedAssignment
-  ))
+  ));
 }
 
 /**
@@ -160,35 +165,15 @@ function getTodosAssignedTo(assignment) {
  * @return {String}
  */
 function groupName(nodePathname) {
-  const dirname = path.dirname(nodePathname)
-  const nodeName = path.basename(nodePathname, '.md')
-  let parentDirname = path.basename(dirname)
+  const dirname = path.dirname(nodePathname);
+  const nodeName = path.basename(nodePathname, '.md');
+  let parentDirname = path.basename(dirname);
 
   if (parentDirname === nodeName) {
-    parentDirname = path.basename(path.dirname(dirname))
+    parentDirname = path.basename(path.dirname(dirname));
   }
 
-  return `${parentDirname} / ${nodeName}`
-}
-
-/**
- * Determine validity of a filename
- *
- * Determines if the filename is not included in the FILE_IGNORE
- *
- * @param {String} file The filename to validate
- * @returns {Boolean}
- */
-function isValidNode(filename) {
-  for (let i = 0; i < FILE_IGNORE.length; i++) {
-    const pattern = new RegExp(FILE_IGNORE[i])
-
-    if (pattern.test(filename)) {
-      return false
-    }
-  }
-
-  return true
+  return `${parentDirname} / ${nodeName}`;
 }
 
 /**
@@ -201,23 +186,23 @@ function isValidNode(filename) {
  * @param {String} assignedTo Optional individual to filter by
  */
 function logTodos(todos = [], assignedTo) {
-  let title = 'All todos:'
+  let title = 'All todos:';
 
   if (assignedTo) {
-    title = `Todos assigned to ${assignedTo}`
+    title = `Todos assigned to ${assignedTo}`;
   }
 
-  console.log(`\x1b[1m\x1b[34m${title}\x1b[0m`)
-  console.log('----------------------------------------------------------')
+  console.log(`\x1b[1m\x1b[34m${title}\x1b[0m`);
+  console.log('----------------------------------------------------------');
 
   const groups = todos.reduce((obj, todo) => {
-    obj[todo.groupName] = obj[todo.groupName] || []
-    obj[todo.groupName].push(cleanTodo(todo.todo))
-    return obj
-  }, {})
+    obj[todo.groupName] = obj[todo.groupName] || [];
+    obj[todo.groupName].push(cleanTodo(todo.todo));
+    return obj;
+  }, {});
 
   Object.keys(groups).forEach((group) => {
-    console.log('\x1b[32m', `\n${group}:`, '\x1b[0m')
+    console.log('\x1b[32m', `\n${group}:`, '\x1b[0m');
 
     groups[group].forEach((todo) => {
       const formattedTodo = todo
@@ -226,31 +211,31 @@ function logTodos(todos = [], assignedTo) {
         // Format user as bold and blue
         .replace(/@[^\s]+/, "\x1b[34m\x1b[1m$&\x1b[0m")
 
-      console.log(`* ${formattedTodo}`)
+      console.log(`* ${formattedTodo}`);
     })
   })
 }
 
 // Log output when called directly (from CLI)
 if (require.main === module) {
-  let assignedTo
-  let todos
+  let assignedTo;
+  let todos;
 
   if (argv.mine || ['me', 'mine'].includes(`${argv.assignedTo}`.toLowerCase())) {
-    assignedTo = 'Me'
-    todos = getTodosAssignedTo('Me')
+    assignedTo = 'Me';
+    todos = getTodosAssignedTo('Me');
   } else if (argv.assignedTo) {
-    assignedTo = argv.assignedTo
-    todos = getTodosAssignedTo(argv.assignedTo)
+    assignedTo = argv.assignedTo;
+    todos = getTodosAssignedTo(argv.assignedTo);
   } else {
-    todos = getTodos()
+    todos = getTodos();
   }
 
-  logTodos(todos, assignedTo)
+  logTodos(todos, assignedTo);
 }
 
 module.exports = {
   default: getTodos,
   getTodos,
   getTodosAssignedTo
-}
+};

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const { CWD } = require('./constants');
 
 const questions = [
   {
@@ -77,6 +78,8 @@ function askQuestion({
  * configuration JSON Object to a local JSON file. If not confirmed, the
  * Promise is rejected with an error message.
  * 
+ * @requires JSON
+ * 
  * @param {Object} configuration JSON configuration Object
  * @param {Readline.Interface} rl a Readline Interface to ask questions with
  * 
@@ -105,14 +108,16 @@ function confirmConfiguration(configuration = {}, rl) {
  * 
  * Writes the supplied configuration JSON Object to a file.
  * 
+ * @requires fs
+ * @requires path
+ * @requires JSON
+ * 
  * @param {Object} configuration JSON configuration Object
  * 
  * @return {Promise}
  */
 function writeConfiguration(configuration) {
-  // Module root
-  const cwd = path.dirname(__dirname);
-  const filePath = path.resolve(cwd, 'project-config.json');
+  const filePath = path.resolve(CWD, 'project-config.json');
 
   return new Promise((resolve, reject) => {
     try {
@@ -136,6 +141,9 @@ function writeConfiguration(configuration) {
  * 
  * Initiate a configuration session for a project and write the configuration
  * to a local file for reference.
+ * 
+ * @async
+ * @requires Readline
  */
 async function configure() {
   let configuration = {};
