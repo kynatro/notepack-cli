@@ -1,0 +1,24 @@
+{
+  "name": "notepack",
+  "version": "1.0.0",
+  "description": "Local note taking Node helpers",
+  "main": "index.js",
+  "scripts": {
+    "config": "node src/config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kynatro/notepack.git"
+  },
+  "author": "Dave Shepard <kynatro@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kynatro/notepack/issues"
+  },
+  "homepage": "https://github.com/kynatro/notepack#readme",
+  "dependencies": {
+    "front-matter": "^4.0.2",
+    "yargs": "^15.4.0"
+  }
+}
