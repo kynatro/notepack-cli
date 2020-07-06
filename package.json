@@ -4,8 +4,12 @@
   "description": "Local note taking Node helpers",
   "main": "index.js",
   "scripts": {
-    "config": "node src/config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "configure": "node src/configure.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "todos": "node src/todos.js",
+    "todos:mine": "npm run todos -- --mine",
+    "todos:assignedTo": "npm run todos -- --assignedTo",
+    "todos:update": "npm run scripts/updateTodos.js"
   },
   "repository": {
     "type": "git",
