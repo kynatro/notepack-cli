@@ -10,7 +10,8 @@
     "todos:mine": "npm run todos -- --mine",
     "todos:assignedTo": "npm run todos -- --assignedTo",
     "todos:update": "node src/updateTodos.js",
-    "todos:update:assignedTo": "npm run todos:update -- --assignedTo"
+    "todos:update:assignedTo": "npm run todos:update -- --assignedTo",
+    "watch": "gulp"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/kynatro/notepack#readme",
   "dependencies": {
     "front-matter": "^4.0.2",
+    "gulp": "^4.0.2",
     "yargs": "^15.4.0"
   }
 }
