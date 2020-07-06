@@ -3,7 +3,7 @@ const { getTeamMembers } = require('./team');
 const argv = require('yargs').argv;
 const fs = require('fs');
 const path = require('path');
-const { BASE_FOLDERS, CWD, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL, APP_ROOT_FOLDER } = require('./constants');
+const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants');
 
 /**
  * Get todo group names
