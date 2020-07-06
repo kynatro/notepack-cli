@@ -4,6 +4,16 @@ var fs = require('fs')
 var path = require('path')
 var { CWD, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants')
 
+/**
+ * Get todo group names
+ * 
+ * Iterates through todos and builds a deduped array of groupName values,
+ * sorted by file date in descending order.
+ * 
+ * @param {Array} todos Todos to parse
+ * 
+ * @return {Array}
+ */
 function getGroupNames(todos) {
   // Sort todos by date before grouping to ensure groups are ordered by date
   return todos.sort((a, b) => a.fileDate < b.fileDate ? 1 : -1)
