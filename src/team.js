@@ -22,10 +22,11 @@ const { TEAM_FOLDER, APP_ROOT_FOLDER } = require('./constants');
  */
 function getTeamMembers() {
   let teamMembers = [];
+  const teamFolderPath = path.resolve(APP_ROOT_FOLDER, TEAM_FOLDER);
 
-  fs.readdirSync(path.resolve(APP_ROOT_FOLDER, TEAM_FOLDER)).forEach((node) => {
-    const nodePathname = path.resolve(APP_ROOT_FOLDER, pathScope, node)
-    const nodeStats = fs.statSync(nodePathname)
+  fs.readdirSync(teamFolderPath).forEach((node) => {
+    const nodePathname = path.resolve(teamFolderPath, node);
+    const nodeStats = fs.statSync(nodePathname);
     let teamMember = {};
 
     if (isValidNode(node) && nodeStats.isDirectory()) {
@@ -38,7 +39,7 @@ function getTeamMembers() {
         const teamMemberDetails = fm(teamMemberReadme);
 
         teamMember = {
-          ...teamMemberReadme,
+          ...teamMember,
           ...teamMemberDetails.attributes
         }
       }
@@ -54,16 +55,19 @@ function getTeamMembers() {
  * Get team member aliases
  * 
  * Processes the results of getTeamMembers() and returns an object of aliases
- * keyed off team member aliases.
+ * keyed off team member aliases. Automatically aliases for dot-concatenated
+ * variants of team member names (e.g. FirstName.LastName).
  * 
  * @return {Object} Team member aliases
  */
 function getTeamMemberAliases() {
   const teamMembers = getTeamMembers();
 
-  return teamMembers.reduce((obj, {name, aliases = []}) => (
-    aliases.forEach(alias => obj[alias] = name)
-  ), {});
+  return teamMembers.reduce((obj, {name, aliases = []}) => {
+    aliases.forEach(alias => obj[alias.toLowerCase()] = name);
+    obj[name.replace(/\s/gi, '.').toLowerCase()] = name;
+    return obj;
+  }, {});
 }
 
 /**
@@ -77,9 +81,10 @@ function getTeamMemberAliases() {
 function getNonReportingTeamMemberNames() {
   const teamMembers = getTeamMembers();
 
-  return teamMembers.reduce((arr, { name, isNonReporting }) => (
-    isNonReporting && arr.push(name)
-  ), []);
+  return teamMembers.reduce((arr, { name, isNonReporting }) => {
+    isNonReporting && arr.push(name);
+    return arr;
+  }, []);
 }
 
 module.exports = {

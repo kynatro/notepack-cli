@@ -22,13 +22,13 @@ function cleanTodo(todo) {
 /**
  * Format assignment for easier matching
  *
- * Removes any @ mention prefixes and sets the string to lowercase
+ * Removes any @ mention prefixes, replaces . with spaces, trims white space.
  *
  * @param {String} assignment Assignment string
  * @returns {String}
  */
 function formatAssignment(assignment) {
-  return assignment.replace(/^@/, '').toLowerCase();
+  return assignment.replace(/^@/, '').replace(/\./, ' ').trim();
 }
 
 /**
@@ -44,7 +44,7 @@ function formatAssignment(assignment) {
  */
 function getAssignment(todo) {
   const formattedTodo = cleanTodo(todo);
-  const mentionAssignment = formattedTodo.match(/^@([A-Za-z]+)/);
+  const mentionAssignment = formattedTodo.match(/^@([A-Za-z\.]+)/);
 
   if (mentionAssignment) {
     return mentionAssignment[1];
@@ -64,8 +64,8 @@ function getAssignment(todo) {
  */
 function getAssignmentAlias(assignment) {
   const aliases = getTeamMemberAliases();
-
-  return aliases[formatAssignment(assignment)] || assignment;
+  const formattedAssignment = formatAssignment(assignment);
+  return aliases[formattedAssignment.toLowerCase()] || formattedAssignment;
 }
 
 /**
@@ -112,14 +112,16 @@ function getTodos(pathScope = '', todos = []) {
               fileDate = fileDate[0];
             }
 
+            const assignedTo = getAssignment(match);
+
             todos.push({
               id: id++,
               filePath: nodePathname.replace(APP_ROOT_FOLDER, '.'),
               fileName: node,
               groupName: groupName(nodePathname),
               todo: cleanTodo(match),
-              assignedTo: getAssignment(match),
-              assignedToAlias: getAssignmentAlias(match),
+              assignedTo,
+              assignedToAlias: getAssignmentAlias(assignedTo),
               fileCreateTime: nodeStats.birthtime || nodeStats.ctime,
               fileDate
             });
@@ -129,7 +131,7 @@ function getTodos(pathScope = '', todos = []) {
         todos = getTodos(nodePathname, todos);
       }
     }
-  })
+  });
 
   return todos;
 }
@@ -138,19 +140,17 @@ function getTodos(pathScope = '', todos = []) {
  * Get todos assigned to an individual
  *
  * Returns a filtered set of todos whose assignedTo or assignedToAlias matches
- * the assignment argument.
+ * the assignment argument. Uses alias for comparison to allow any alias or 
+ * actual name to be passed as the assignment argument.
  *
  * @param {String} assignment Assignment value
  * @returns
  */
 function getTodosAssignedTo(assignment) {
-  const formattedAssignment = formatAssignment(assignment);
+  const aliasedAssignment = getAssignmentAlias(assignment);
   const todos = getTodos();
 
-  return todos.filter(todo => (
-    todo.assignedTo.toLowerCase() === formattedAssignment ||
-    todo.assignedToAlias.toLowerCase() === formattedAssignment
-  ));
+  return todos.filter(todo => todo.assignedToAlias === aliasedAssignment);
 }
 
 /**
@@ -226,7 +226,7 @@ if (require.main === module) {
     todos = getTodosAssignedTo('Me');
   } else if (argv.assignedTo) {
     assignedTo = argv.assignedTo;
-    todos = getTodosAssignedTo(argv.assignedTo);
+    todos = getTodosAssignedTo(assignedTo);
   } else {
     todos = getTodos();
   }
@@ -236,6 +236,8 @@ if (require.main === module) {
 
 module.exports = {
   default: getTodos,
+  getAssignment,
+  getAssignmentAlias,
   getTodos,
   getTodosAssignedTo
 };
