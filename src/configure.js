@@ -5,6 +5,11 @@ const { CWD } = require('./constants');
 
 const questions = [
   {
+    defaultValue: path.resolve(path.dirname(CWD)),
+    key: 'appRootFolder',
+    text: 'Application root folder'
+  },
+  {
     callback: ({ answer, configuration, key }) => configuration[key] = answer.split(',').map(f => f.trim()),
     key: 'baseFolders',
     text: 'Folder paths to collate todos (comma delimited)'
@@ -154,8 +159,8 @@ async function configure() {
 
   console.log('\x1b[1m\x1b[34m🛠 Configure your Notepack project...\n\x1b[0m');
   console.log('You will be asked a series of questions to configure Notepack');
-  console.log('for your project. All file paths should be relative to your');
-  console.log('project root.\n');
+  console.log('for your project. All file paths should be relative to the');
+  console.log('application root folder.\n');
 
   for (let i = 0; i < questions.length; i++) {
     await askQuestion({

@@ -17,7 +17,7 @@ const CWD = path.dirname(__dirname);
  * @constant
  * @type {String}
  */
-const APP_ROOT_FOLDER = path.dirname(CWD) === 'node_modules' ? path.resolve(path.dirname(CWD)).split('node_modules')[0] : CWD;
+const APP_ROOT_FOLDER = path.resolve(configuration.appRootFolder) || path.resolve(path.dirname(CWD)).split('node_modules')[0];
 
 /**
  * Base folders to scan
