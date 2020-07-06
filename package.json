@@ -9,7 +9,8 @@
     "todos": "node src/todos.js",
     "todos:mine": "npm run todos -- --mine",
     "todos:assignedTo": "npm run todos -- --assignedTo",
-    "todos:update": "npm run scripts/updateTodos.js"
+    "todos:update": "node src/updateTodos.js",
+    "todos:update:assignedTo": "npm run todos:update -- --assignedTo"
   },
   "repository": {
     "type": "git",
