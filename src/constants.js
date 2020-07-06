@@ -52,14 +52,6 @@ const MATCH_PATTERN = "-\\s?\\[ \\]"
 const TEAM_FOLDER = configuration.teamFolder;
 
 /**
- * Anchor heading for a section of todos in a README.md file.
- *
- * @constant
- * @type {String}
- */
-const TODO_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${configuration.todoAnchor}`;
-
-/**
  * Anchor heading level
  * 
  * The H tag level of the anchor heading.
@@ -68,6 +60,14 @@ const TODO_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${configuration.todoAnchor}`;
  * @type {String}
  */
 const TODO_ANCHOR_HEADING_LEVEL = configuration.todoAnchorHeadingLevel;
+
+/**
+ * Anchor heading for a section of todos in a README.md file.
+ *
+ * @constant
+ * @type {String}
+ */
+const TODO_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${configuration.todoAnchor}`;
 
 /**
  * Todo group heading level
