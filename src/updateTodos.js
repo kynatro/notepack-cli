@@ -1,8 +1,9 @@
-var { getTodos, getTodosAssignedTo } = require('./todos');
-var argv = require('yargs').argv;
-var fs = require('fs');
-var path = require('path');
-var { CWD, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants');
+const { getTodos, getTodosAssignedTo, getAssignmentAlias } = require('./todos');
+const { getTeamMembers } = require('./team');
+const argv = require('yargs').argv;
+const fs = require('fs');
+const path = require('path');
+const { BASE_FOLDERS, CWD, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL, APP_ROOT_FOLDER } = require('./constants');
 
 /**
  * Get todo group names
@@ -45,7 +46,7 @@ function groupedTodos(todos, filePath, options = {}) {
   groupNames.forEach(groupName => {
     const groupTodos = todos.filter((todo) => todo.groupName === groupName).sort((a, b) => a.id > b.id ? 1 : -1);
     // Get relative path to ensure links are correct
-    const relativeFilePath = path.relative(path.dirname(filePath), path.join(CWD, groupTodos[0].filePath));
+    const relativeFilePath = path.relative(path.dirname(filePath), path.join(APP_ROOT_FOLDER, groupTodos[0].filePath));
     const groupPath = encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
 
     groupedStr = `${groupedStr}
@@ -67,12 +68,12 @@ ${groupTodos.map(todo => `- [ ] ${todo.todo}`).join('\n')}`;
 function updateTodosForFolders(folders = []) {
   const isValidFolder = (nodePathName) => (
     !nodePathName.toLowerCase().includes('archive') &&
-    !nodePathName.startsWith(path.join(CWD, TEAM_FOLDER))
+    !nodePathName.startsWith(path.join(APP_ROOT_FOLDER, TEAM_FOLDER))
   );
 
   folders.forEach(folder => {
-    fs.readdirSync(path.resolve(CWD, folder)).forEach((node) => {
-      const nodePathName = path.resolve(CWD, folder, node);
+    fs.readdirSync(path.resolve(APP_ROOT_FOLDER, folder)).forEach((node) => {
+      const nodePathName = path.resolve(APP_ROOT_FOLDER, folder, node);
       const nodeStats = fs.statSync(nodePathName);
 
       if (nodeStats.isDirectory() && isValidFolder(nodePathName)) {
@@ -105,15 +106,13 @@ function updateTodosForFolders(folders = []) {
  */
 function updateTodosForPerson(assignedTo = 'me') {
   // Attempt to get by alias
-  const aliases = getTeamMemberAliases();
-  const person = aliases[assignedTo.toLowerCase()] || assignedTo;
-  const alias = Object.keys(aliases).find(key => aliases[key] === assignedTo) || assignedTo;
-  const todos = getTodosAssignedTo(alias);
+  const assignment = getAssignmentAlias(assignedTo);
+  const todos = getTodosAssignedTo(assignment);
 
   // Compose filePath based on assignedTo for either an person or root for mine
-  let filePath = path.join(CWD, TEAM_FOLDER, person, 'README.md');
-  if (['me', 'mine'].includes(assignedTo.toLowerCase())) {
-    filePath = path.join(CWD, 'README.md');
+  let filePath = path.join(APP_ROOT_FOLDER, TEAM_FOLDER, assignment, 'README.md');
+  if (['me', 'mine'].includes(assignment.toLowerCase())) {
+    filePath = path.join(APP_ROOT_FOLDER, 'README.md');
   }
 
   writeTodos(filePath, todos);
@@ -174,7 +173,15 @@ function writeTodos(filePath, todos) {
 }
 
 if (require.main === module) {
-  updateTodosForPerson(argv.assignedTo);
+  if (argv.assignedTo) {
+    updateTodosForPerson(argv.assignedTo);
+  } else {
+    const teamMembers = getTeamMembers();
+
+    teamMembers.forEach(({ name }) => updateTodosForPerson(name));
+    updateTodosForPerson('Me');
+    updateTodosForFolders(BASE_FOLDERS);
+  }
 }
 
 module.exports = {
