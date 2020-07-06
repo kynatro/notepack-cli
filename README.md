@@ -48,40 +48,6 @@ The heading level for the todos section; default is `##` (an H2). This is used f
 **Todo group heading level (should be less than anchor heading)**  
 The heading level for grouping todos in the todos section of `README.md` files. Notepack will group todos by folder and filename and display that grouping above those todos (with the grouping heading linked to the file housing the todos).
 
-## CLI
-
-### notepack configure
-
-Configure NotePack
-
-### notepack
-
-By default, executing `notepack` will simply return a list of all the open todos ordered by file date. Same as running `notepack todos`
-
-```sh
-> notepack
-```
-
-### notepack todos mine
-
-Display open todos assigned to the project owner.
-
-### notepack todos [TEAM_MEMBER]
-
-Display open todos assigned to a team member.
-
-### notepack update
-
-Update all `README.md` files (folders and team).
-
-### notepack watch
-
-Watch file changes in the background and automatically update `README.md` files with new open todos or closed todos. Watch will begin running in the background detatched from the current terminal and not provide any output. This will allow watching to happen without having to keep terminal open.
-
-### notepack stop
-
-Stop watching for file changes.
-
 ## Using NotePack
 
 NotePack will work with any file naming schema or folder organization, however it will work best for you if you follow a consistent convention.
@@ -159,3 +125,61 @@ aliases:
 
 #### aliases
 An Array of alternate names to refer to a team member by. NotePack will automatically assign an alias for given and sur name concatenation with `.` characters instead of spaces. In the example above, Johnathan Doe can be referenced by `@Johnathan.Doe`, `@John`, `@John.Doe`, or `@Johnathan` in any todo assigned to him.
+
+## CLI
+
+### notepack configure
+
+Configure NotePack
+
+```sh
+> notepack configure
+```
+
+### notepack
+
+By default, executing `notepack` will simply return a list of all the open todos ordered by file date. Same as running `notepack todos`
+
+```sh
+> notepack
+```
+
+### notepack todos mine
+
+Display open todos assigned to the project owner.
+
+```sh
+> notepack todos mine
+```
+
+### notepack todos [TEAM_MEMBER]
+
+Display open todos assigned to a team member.
+
+```sh
+> notepack todos "Jane Doe"
+```
+
+### notepack update
+
+Update all `README.md` files (folders and team).
+
+```sh
+> notepack update
+```
+
+### notepack watch
+
+Watch file changes in the background and automatically update `README.md` files with new open todos or closed todos. Watch will begin running in the background detatched from the current terminal and not provide any output. This will allow watching to happen without having to keep terminal open.
+
+```sh
+> notepack watch
+```
+
+### notepack stop
+
+Stop watching for file changes.
+
+```sh
+> notepack stop
+```
