@@ -70,25 +70,7 @@ function getTeamMemberAliases() {
   }, {});
 }
 
-/**
- * Get non-reporting team member names
- * 
- * Processes the results of getTeamMembers() and returns an array of team
- * member names that are non-reporting.
- * 
- * @return {Array} Non-reporting team member names
- */
-function getNonReportingTeamMemberNames() {
-  const teamMembers = getTeamMembers();
-
-  return teamMembers.reduce((arr, { name, isNonReporting }) => {
-    isNonReporting && arr.push(name);
-    return arr;
-  }, []);
-}
-
 module.exports = {
   getTeamMembers,
-  getTeamMemberAliases,
-  getNonReportingTeamMemberNames
+  getTeamMemberAliases
 };
