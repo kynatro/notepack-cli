@@ -7,7 +7,7 @@ const questions = [
   {
     defaultValue: path.resolve(path.dirname(CWD)),
     key: 'appRootFolder',
-    text: 'Application root folder'
+    text: 'Application root folder location'
   },
   {
     callback: ({ answer, configuration, key }) => configuration[key] = answer.split(',').map(f => f.trim()),
