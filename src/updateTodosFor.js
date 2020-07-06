@@ -1,8 +1,8 @@
-var { getTodos, getTodosAssignedTo } = require('./todos')
-var argv = require('yargs').argv
-var fs = require('fs')
-var path = require('path')
-var { CWD, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants')
+var { getTodos, getTodosAssignedTo } = require('./todos');
+var argv = require('yargs').argv;
+var fs = require('fs');
+var path = require('path');
+var { CWD, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants');
 
 /**
  * Get todo group names
@@ -19,10 +19,10 @@ function getGroupNames(todos) {
   return todos.sort((a, b) => a.fileDate < b.fileDate ? 1 : -1)
     .reduce((arr, todo) => {
       if (!arr.includes(todo.groupName)) {
-        arr.push(todo.groupName)
+        arr.push(todo.groupName);
       }
-      return arr
-    }, [])
+      return arr;
+    }, []);
 }
 
 /**
@@ -39,23 +39,21 @@ function getGroupNames(todos) {
  * @return {String}
  */
 function groupedTodos(todos, filePath, options = {}) {
-  const groupNames = getGroupNames(todos)
-  let groupedStr = `${options.prefix}` || ''
+  const groupNames = getGroupNames(todos);
+  let groupedStr = `${options.prefix}` || '';
 
   groupNames.forEach(groupName => {
-    const groupTodos = todos.filter((todo) => todo.groupName === groupName).sort((a, b) => a.id > b.id ? 1 : -1)
+    const groupTodos = todos.filter((todo) => todo.groupName === groupName).sort((a, b) => a.id > b.id ? 1 : -1);
     // Get relative path to ensure links are correct
-    const relativeFilePath = path.relative(path.dirname(filePath), path.join(CWD, groupTodos[0].filePath))
-    const groupPath = encodeURIComponent(relativeFilePath).replace(/%2F/g, '/')
+    const relativeFilePath = path.relative(path.dirname(filePath), path.join(CWD, groupTodos[0].filePath));
+    const groupPath = encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
 
-    groupedStr = `${groupedStr}\n${TODO_GROUP_HEADING_LEVEL} [${groupName}](${groupPath})\n${
-      groupTodos.map(todo => (
-        `- [ ] ${todo.todo}`
-      )).join('\n')
-      }`
-  })
+    groupedStr = `${groupedStr}
+${TODO_GROUP_HEADING_LEVEL} [${groupName}](${groupPath})
+${groupTodos.map(todo => `- [ ] ${todo.todo}`).join('\n')}`;
+  });
 
-  return groupedStr
+  return groupedStr;
 }
 
 /**
@@ -70,24 +68,24 @@ function updateTodosForFolders(folders = []) {
   const isValidFolder = (nodePathName) => (
     !nodePathName.toLowerCase().includes('archive') &&
     !nodePathName.startsWith(path.join(CWD, TEAM_FOLDER))
-  )
+  );
 
   folders.forEach(folder => {
     fs.readdirSync(path.resolve(CWD, folder)).forEach((node) => {
-      const nodePathName = path.resolve(CWD, folder, node)
-      const nodeStats = fs.statSync(nodePathName)
+      const nodePathName = path.resolve(CWD, folder, node);
+      const nodeStats = fs.statSync(nodePathName);
 
       if (nodeStats.isDirectory() && isValidFolder(nodePathName)) {
-        const readmeFilepath = path.join(nodePathName, 'README.md')
+        const readmeFilepath = path.join(nodePathName, 'README.md');
 
         // Update the README.md file if it exists
         if (fs.existsSync(readmeFilepath)) {
-          const todos = getTodos(nodePathName)
+          const todos = getTodos(nodePathName);
 
-          writeTodos(readmeFilepath, todos)
+          writeTodos(readmeFilepath, todos);
         }
 
-        updateTodosForFolders([nodePathName])
+        updateTodosForFolders([nodePathName]);
       }
     })
   })
@@ -108,17 +106,17 @@ function updateTodosForFolders(folders = []) {
 function updateTodosForPerson(assignedTo = 'me') {
   // Attempt to get by alias
   const aliases = getTeamMemberAliases();
-  const person = aliases[assignedTo.toLowerCase()] || assignedTo
-  const alias = Object.keys(aliases).find(key => aliases[key] === assignedTo) || assignedTo
-  const todos = getTodosAssignedTo(alias)
+  const person = aliases[assignedTo.toLowerCase()] || assignedTo;
+  const alias = Object.keys(aliases).find(key => aliases[key] === assignedTo) || assignedTo;
+  const todos = getTodosAssignedTo(alias);
 
   // Compose filePath based on assignedTo for either an person or root for mine
-  let filePath = path.join(CWD, TEAM_FOLDER, person, 'README.md')
+  let filePath = path.join(CWD, TEAM_FOLDER, person, 'README.md');
   if (['me', 'mine'].includes(assignedTo.toLowerCase())) {
-    filePath = path.join(CWD, 'README.md')
+    filePath = path.join(CWD, 'README.md');
   }
 
-  writeTodos(filePath, todos)
+  writeTodos(filePath, todos);
 }
 
 /**
@@ -135,52 +133,52 @@ function updateTodosForPerson(assignedTo = 'me') {
  */
 function writeTodos(filePath, todos) {
   try {
-    fs.accessSync(filePath, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK)
+    fs.accessSync(filePath, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK);
   } catch (error) {
-    console.error('Cannot write to', filePath)
+    console.error('Cannot write to', filePath);
     return false
   }
 
-  const src = fs.readFileSync(filePath, 'utf8')
-  let start = src.indexOf(TODO_ANCHOR)
-  let end
-  let chunks = []
+  const src = fs.readFileSync(filePath, 'utf8');
+  let start = src.indexOf(TODO_ANCHOR);
+  let end;
+  let chunks = [];
 
   // File does not contain a TODO_ANCHOR header, append to the end
   if (start === -1) {
-    start = src.length
-    end = src.length
+    start = src.length;
+    end = src.length;
   }
   // File contains an # TODO_ANCHOR header, replace it
   else {
-    end = src.substring(start + TODO_ANCHOR.length).indexOf(`\n${TODO_ANCHOR_HEADING_LEVEL} `) + start + TODO_ANCHOR.length
+    end = src.substring(start + TODO_ANCHOR.length).indexOf(`\n${TODO_ANCHOR_HEADING_LEVEL} `) + start + TODO_ANCHOR.length;
 
     // If end is the same as start, assume the end of the file
     if (end === start + TODO_ANCHOR.length - 1) {
-      end = src.length
+      end = src.length;
     }
   }
 
   // Beginning of file to start of todos chunk
-  chunks.push(src.substring(0, start).trim())
+  chunks.push(src.substring(0, start).trim());
 
   // Todos grouped by file
-  chunks.push(groupedTodos(todos, filePath, { prefix: TODO_ANCHOR }))
+  chunks.push(groupedTodos(todos, filePath, { prefix: TODO_ANCHOR }));
 
   // End of todos chunk to end of file
-  chunks.push(src.substring(end).trim())
+  chunks.push(src.substring(end).trim());
 
-  fs.writeFileSync(filePath, chunks.join('\n\n').trim() + '\n')
+  fs.writeFileSync(filePath, chunks.join('\n\n').trim() + '\n');
 
-  return true
+  return true;
 }
 
 if (require.main === module) {
-  updateTodosForPerson(argv.assignedTo)
+  updateTodosForPerson(argv.assignedTo);
 }
 
 module.exports = {
   default: updateTodosForPerson,
   updateTodosForPerson,
   updateTodosForFolders
-}
+};
