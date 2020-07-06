@@ -36,16 +36,16 @@ This is the location of your notes project. By default, it is the root folder of
 **Folder paths to collate todos (comma delimited)**  
 You can specify specific folders in your notes project to ensure you aren't scraping any other non-notes folders. You can specify multiple folders with a comma delimited list.
 
-**Folder path for team notes**
+**Folder path for team notes**  
 The folder where your team member notes are kept; default is `Team`. The expectation is that sub-folders exist named after each team member within this folder and each team member sub-folder has a `README.md` file.
 
-**Anchor title for todos section**
+**Anchor title for todos section**  
 The title of the todos section of the `README.md` file. If this section does not exist yet in the file it will be appended to the end of the file. If this section already exists it will be replaced bracketing the start and end of the section between the heading levels specifed in the next question...
 
-**Anchor heading level for todos section**
+**Anchor heading level for todos section**  
 The heading level for the todos section; default is `##` (an H2). This is used for bracketing where the todos section begins and ends (before the next `##` for example).
 
-**Todo group heading level (should be less than anchor heading)**
+**Todo group heading level (should be less than anchor heading)**  
 The heading level for grouping todos in the todos section of `README.md` files. Notepack will group todos by folder and filename and display that grouping above those todos (with the grouping heading linked to the file housing the todos).
 
 ## CLI
