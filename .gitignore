@@ -105,3 +105,6 @@ dist
 
 # Project specific configuration
 project-config.json
+
+# Watching PID
+.WATCHING

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+start_watching () {
+  npm run watch > /dev/null &
+  disown
+  echo -n $! >> .WATCHING
+  printf "\033[0;34mWatching notes in the background (pid: $!)...\033[0m\n"
+}
+
+stop_watching () {
+  kill $(< .WATCHING)
+}
+
+todos () {
+  if [ $1 ]
+    then
+      npm run todos:assignedTo $1
+    else
+      npm run todos
+  fi
+}
+
+update() {
+  npm run todos:update
+}
+
+watch() {
+  if [ -f ".WATCHING" ]
+    then
+      if ps -p $(< .WATCHING) > /dev/null
+        then
+          printf "\033[0;31mAlready watching (pid: $(< ".WATCHING"))...\033[0m\n"
+        else
+          rm .WATCHING
+          start_watching
+      fi
+    else
+      start_watching
+  fi
+}
+
+case "$1" in
+"configure")
+  npm run configure
+  ;;
+"stop")
+  stop_watching
+  ;;
+"todos")
+  todos $2
+  ;;
+"update")
+  update
+  ;;
+"watch")
+  watch
+  ;;
+*)
+  todos
+  ;;
+esac

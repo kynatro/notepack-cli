@@ -13,6 +13,7 @@
     "todos:update:assignedTo": "npm run todos:update -- --assignedTo",
     "watch": "gulp"
   },
+  "bin": "./bin/notepack",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kynatro/notepack.git"
