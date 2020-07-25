@@ -126,9 +126,10 @@ function writeConfiguration(configuration) {
 
   return new Promise((resolve, reject) => {
     try {
-      fs.accessSync(filePath, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK);
+      const checkPath = fs.existsSync(filePath) ? filePath : path.dirname(filePath);
+      fs.accessSync(checkPath, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK);
     } catch(err) {
-      reject(`${filePath} is not writeable.`);
+      reject(`${checkPath} is not writeable.`);
     }
   
     fs.writeFile(filePath, JSON.stringify(configuration, null, 2), (err) => {
