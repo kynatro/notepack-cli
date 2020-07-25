@@ -24,5 +24,10 @@
   },
   "devDependencies": {
     "jest": "^26.1.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "project-config.json": "<rootDir>/__mocks__/project-config.json"
+    }
   }
 }
