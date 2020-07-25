@@ -1,11 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
-const { CWD } = require('./constants');
+const argv = require('yargs').argv;
+const CWD = argv.cwd || path.dirname(__filename);
+
+function cwd(dir) {
+  const dirname = path.dirname(path.resolve(dir));
+
+  if (path.basename(dirname) === 'node_modules') {
+    return path.resolve(path.dirname(dirname));
+  }
+
+  return cwd(dirname);
+}
 
 const questions = [
   {
-    defaultValue: path.resolve(path.dirname(CWD)),
+    defaultValue: cwd(CWD),
     key: 'appRootFolder',
     text: 'Application root folder location'
   },

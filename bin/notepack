@@ -1,27 +1,41 @@
 #!/bin/bash
 
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+
+# Real directory the file exists
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+
+# Current Working Directory
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
 start_watching () {
-  npm run watch > /dev/null &
+  node $DIR/../src/watch.js --background > /dev/null &
   disown
-  echo -n $! >> .WATCHING
+  echo -n $! >> $DIR/../.WATCHING
   printf "\033[0;34mWatching notes in the background (pid: $!)...\033[0m\n"
 }
 
 stop_watching () {
-  kill $(< .WATCHING)
+  kill $(< $DIR/../.WATCHING)
 }
 
 todos () {
   if [ $1 ]
     then
-      npm run todos:assignedTo $1
+      node $DIR/../src/todos.js --asignedTo $1
     else
-      npm run todos
+      node $DIR/../src/todos.js
   fi
 }
 
 update() {
-  npm run todos:update
+  node $DIR/../src/updateTodos.js
 }
 
 watch() {
@@ -41,7 +55,7 @@ watch() {
 
 case "$1" in
 "configure")
-  npm run configure
+  node $DIR/../src/configure.js --cwd $CWD
   ;;
 "stop")
   stop_watching
