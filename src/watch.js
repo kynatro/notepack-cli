@@ -1,9 +1,12 @@
-const { watch } = require('gulp');
+const chokidar = require('chokidar');
 const fs = require('fs');
 const path = require('path');
-const { updateTodosForFolders, updateTodosForPerson } = require('./src/updateTodos');
-const { getTeamMembers } = require('./src/team');
-const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./src/constants');
+const { updateTodosForFolders, updateTodosForPerson } = require('./updateTodos');
+const { getTeamMembers } = require('./team');
+const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./constants');
+
+// Watch location based on user specified APP_ROOT_FOLDER
+const watcher = chokidar.watch('**/*.md', { cwd: APP_ROOT_FOLDER });
 
 /**
  * Clean up files
@@ -15,14 +18,14 @@ const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./src/constants'
  * @requires path
  */
 function exitScript() {
-  const watchingFilePath = path.join(__dirname, '.WATCHING')
+  const watchingFilePath = path.join(path.dirname(__dirname), '.WATCHING')
 
   // Gate removal of file for testing
   if (fs.existsSync(watchingFilePath)) {
     fs.unlinkSync(watchingFilePath);
   }
-  
-  process.exit();
+
+  watcher.close().then(() => process.exit());
 }
 
 /**
@@ -58,9 +61,6 @@ function updateTodosForMe() {
   updateTodosForPerson('Me');
 }
 
-// Watch location based on user specified APP_ROOT_FOLDER
-const watcher = watch(['**/*.md'], { cwd: APP_ROOT_FOLDER });
-
 /**
  * Monitor change events from chokidar watcher
  * 
@@ -82,7 +82,7 @@ watcher.on('change', (path) => {
       console.log(`Updating todos for ${teamMember}`);
       updateTodosForPerson(teamMember);
       updateTodosForMe();
-    } 
+    }
     // Otherwise, update everything
     else {
       updateTodosForAll();
@@ -102,7 +102,4 @@ process.on('EXIT', exitScript);
 updateTodosForAll();
 updateTodosForFolders(BASE_FOLDERS);
 
-exports.default = (cb) => {
-  console.log('Watching folders...');
-  cb();
-}
+console.log('Watching folders...');

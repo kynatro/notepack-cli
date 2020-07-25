@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/kynatro/notepack#readme",
   "dependencies": {
+    "chokidar": "^3.4.1",
     "front-matter": "^4.0.2",
-    "gulp": "^4.0.2",
     "yargs": "^15.4.0"
   }
 }
