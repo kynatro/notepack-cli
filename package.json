@@ -4,14 +4,7 @@
   "description": "Local note taking Node helpers",
   "main": "index.js",
   "scripts": {
-    "configure": "node src/configure.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "todos": "node src/todos.js",
-    "todos:mine": "npm run todos -- --mine",
-    "todos:assignedTo": "npm run todos -- --assignedTo",
-    "todos:update": "node src/updateTodos.js",
-    "todos:update:assignedTo": "npm run todos:update -- --assignedTo",
-    "watch": "gulp"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": "./bin/notepack",
   "repository": {
