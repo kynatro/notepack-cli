@@ -2,22 +2,12 @@ const path = require('path');
 const configuration = require('../project-config.json');
 
 /**
- * Current working directory
- * 
- * The current working directory for the project
- * 
- * @constant
- * @type {String}
- */
-const CWD = path.dirname(__dirname);
-
-/**
  * App root folder
  * 
  * @constant
  * @type {String}
  */
-const APP_ROOT_FOLDER = path.resolve(configuration.appRootFolder) || path.resolve(path.dirname(CWD)).split('node_modules')[0];
+const APP_ROOT_FOLDER = path.resolve(configuration.appRootFolder);
 
 /**
  * Base folders to scan
@@ -83,7 +73,6 @@ const TODO_GROUP_HEADING_LEVEL = configuration.todoGroupHeadingLevel;
 module.exports = {
   APP_ROOT_FOLDER,
   BASE_FOLDERS,
-  CWD,
   FILE_IGNORE,
   MATCH_PATTERN,
   TEAM_FOLDER,
