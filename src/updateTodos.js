@@ -4,6 +4,7 @@ const argv = require('yargs').argv;
 const fs = require('fs');
 const path = require('path');
 const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants');
+const RUNNING_IN_BACKGROUND = argv.background;
 
 /**
  * Get todo group names
@@ -134,7 +135,9 @@ function writeTodos(filePath, todos) {
   try {
     fs.accessSync(filePath, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK);
   } catch (error) {
-    console.error('Cannot write to', filePath);
+    if (!RUNNING_IN_BACKGROUND) {
+      console.error('Cannot write to', filePath);
+    }
     return false
   }
 
