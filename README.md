@@ -1,10 +1,10 @@
-# NotePack
+# NotePack CLI
 
 Local note taking with intelligent todo collation.
 
 ## About
 
-NotePack project started out as a simple set of scripts to keep my own note taking sane. I got tired of switching between note taking apps depending on my job, the whims of IT, and the fickleness of my WiFi connection. So, I decided to start taking all my notes locally in Markdown. Since my notes were just files, and Markdown is a structured format, I figured I'd make my notes work for me.
+NotePack CLI project started out as a simple set of scripts to keep my own note taking sane. I got tired of switching between note taking apps depending on my job, the whims of IT, and the fickleness of my WiFi connection. So, I decided to start taking all my notes locally in Markdown. Since my notes were just files, and Markdown is a structured format, I figured I'd make my notes work for me.
 
 NotePack will collate all todos found in any Markdown file in your notes folder, order and group them, and then place them in `README.md` files anywhere you place them among your notes (with todos kept in context to the location of said `README.md` file).
 
