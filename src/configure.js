@@ -122,7 +122,7 @@ function confirmConfiguration(configuration = {}, rl) {
  * @return {Promise}
  */
 function writeConfiguration(configuration) {
-  const filePath = path.resolve(CWD, 'project-config.json');
+  const filePath = path.resolve(path.dirname(__dirname), 'project-config.json');
 
   return new Promise((resolve, reject) => {
     try {
