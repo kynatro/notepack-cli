@@ -23,11 +23,18 @@
     "yargs": "^15.4.0"
   },
   "devDependencies": {
-    "jest": "^26.1.0"
+    "eslint": "^7.5.0",
   },
   "jest": {
     "moduleNameMapper": {
       "project-config.json": "<rootDir>/__mocks__/project-config.json"
     }
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "extends": "eslint:recommended"
   }
 }
