@@ -5,6 +5,19 @@ const { isValidNode } = require('./helpers');
 const { TEAM_FOLDER, APP_ROOT_FOLDER } = require('./constants');
 
 /**
+ * Format an alias
+ * 
+ * Formats an alias for easier discovery. Replaces spaces with periods for
+ * predictable @mention identification and makes lowercase to remove case
+ * sensitivity matching.
+ * 
+ * @param {String} alias Alias to format
+ */
+function formatAlias(alias) {
+  return alias.replace(/\s/gi, '.').toLowerCase();
+}
+
+/**
  * Get team members
  * 
  * Iterates the TEAM_FOLDER sub-folders as team member folders and builds an
@@ -64,13 +77,14 @@ function getTeamMemberAliases() {
   const teamMembers = getTeamMembers();
 
   return teamMembers.reduce((obj, {name, aliases = []}) => {
-    aliases.forEach(alias => obj[alias.toLowerCase()] = name);
-    obj[name.replace(/\s/gi, '.').toLowerCase()] = name;
+    aliases.forEach(alias => obj[formatAlias(alias)] = name);
+    obj[formatAlias(name)] = name;
     return obj;
   }, {});
 }
 
 module.exports = {
+  formatAlias,
   getTeamMembers,
   getTeamMemberAliases
 };
