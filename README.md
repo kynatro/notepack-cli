@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/kynatro/notepack-cli/workflows/Tests/badge.svg)](https://github.com/kynatro/notepack-cli/actions)
+
 # NotePack CLI
 
 Local note taking with intelligent todo collation.
