@@ -24,6 +24,8 @@
   },
   "devDependencies": {
     "eslint": "^7.5.0",
+    "jest": "^26.1.0",
+    "js-yaml": "^3.14.0"
   },
   "jest": {
     "moduleNameMapper": {
