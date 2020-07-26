@@ -24,14 +24,16 @@ const validFiles = [
   '2020-07-25 Notes.md'
 ];
 
-invalidFiles.forEach(invalidFile => {
-  test(`returns false for ${invalidFile}`, () => {
-    expect(isValidNode(invalidFile)).toBeFalsy();
+describe('isValidNode()', () => {
+  invalidFiles.forEach(invalidFile => {
+    test(`returns false for ${invalidFile}`, () => {
+      expect(isValidNode(invalidFile)).toBeFalsy();
+    });
   });
-});
-
-validFiles.forEach(invalidFile => {
-  test(`returns true for ${invalidFile}`, () => {
-    expect(isValidNode(invalidFile)).toBeTruthy();
+  
+  validFiles.forEach(invalidFile => {
+    test(`returns true for ${invalidFile}`, () => {
+      expect(isValidNode(invalidFile)).toBeTruthy();
+    });
   });
 });
