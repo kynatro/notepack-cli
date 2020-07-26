@@ -27,10 +27,9 @@ ${yaml.dump(TEAM_MEMBERS[name])}
 
 jest.mock('fs');
 
-describe('getTeamMembers()', () => {
-  beforeEach(() => {
-    require('fs').__setMockFiles(MOCK_FILE_INFO);
-  });
+beforeEach(() => {
+  require('fs').__setMockFiles(MOCK_FILE_INFO);
+});
 
 describe('formatAlias()', () => {
   test('makes string lowercase', () => {
@@ -62,7 +61,52 @@ describe('getTeamMembers()', () => {
     const teamMembersAliases = Object.values(teamMembers).reduce((arr, { aliases }) => ([...arr, ...aliases]), []);
 
     Object.values(TEAM_MEMBERS).forEach(({ aliases }) => {
-      aliases && aliases.forEach(alias => expect(teamMembersAliases.includes(alias)).toBeTruthy());
+      aliases && aliases.forEach(alias => expect(teamMembersAliases).toContain(alias));
     });
   })
+});
+
+describe('getTeamMemberAliases()', () => {
+  test('returns an Object', () => {
+    const teamMemberAliases = getTeamMemberAliases();
+    expect(typeof(teamMemberAliases)).toBe('object');
+  });
+
+  test('return Object contains formatted alias keys for each team member name', () => {
+    const teamMemberAliases = getTeamMemberAliases();
+    
+    Object.keys(TEAM_MEMBERS).forEach((name) => {
+      expect(teamMemberAliases[formatAlias(name)]).toBeDefined();
+    });
+  });
+
+  test('return Object contains formatted alias keys for each team member alias', () => {
+    const teamMemberAliases = getTeamMemberAliases();
+
+    Object.values(TEAM_MEMBERS).forEach(({ aliases }) => {
+      aliases && aliases.forEach(alias => {
+        expect(teamMemberAliases[formatAlias(alias)]).toBeDefined();
+      });
+    });
+  });
+
+  test('return Object alias keys to match the team member name', () => {
+    const teamMemberAliases = getTeamMemberAliases();
+    
+    Object.keys(TEAM_MEMBERS).forEach((name) => {
+      const { aliases } = TEAM_MEMBERS[name];
+
+      aliases && aliases.forEach(alias => {
+        expect(teamMemberAliases[formatAlias(alias)]).toEqual(name);
+      })
+    })
+  });
+
+  test('return Object formatted name keys to match the team member name', () => {
+    const teamMemberAliases = getTeamMemberAliases();
+    
+    Object.keys(TEAM_MEMBERS).forEach((name) => {
+      expect(teamMemberAliases[formatAlias(name)]).toEqual(name);
+    });
+  });
 });
