@@ -1,7 +1,7 @@
 'use strict';
 
 const yaml = require('js-yaml');
-const { getTeamMembers } = require('../team');
+const { formatAlias, getTeamMembers, getTeamMemberAliases } = require('../team');
 const { APP_ROOT_FOLDER, TEAM_FOLDER } = require('../constants');
 const path = require('path');
 const TEAM_FOLDER_PATH = path.resolve(APP_ROOT_FOLDER, TEAM_FOLDER);
@@ -32,6 +32,21 @@ describe('getTeamMembers()', () => {
     require('fs').__setMockFiles(MOCK_FILE_INFO);
   });
 
+describe('formatAlias()', () => {
+  test('makes string lowercase', () => {
+    const mixedCaseName = 'RoBeRt';
+
+    expect(formatAlias(mixedCaseName)).toEqual(mixedCaseName.toLowerCase());
+  });
+
+  test('replaces spaces with periods', () => {
+    const nameWithSpaces = 'Robert Paulson';
+
+    expect(formatAlias(nameWithSpaces)).toEqual(nameWithSpaces.toLowerCase().replace(/\s/gi, '.'));
+  });
+});
+
+describe('getTeamMembers()', () => {
   test('returns an Array', () => {
     const teamMembers = getTeamMembers();
     expect(Array.isArray(teamMembers)).toBeTruthy();
