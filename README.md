@@ -14,12 +14,7 @@ NotePack also understands the concept of teams and will make distinctions betwee
 
 ## Roadmap
 
-Still lots to do to make this into a tool that others will truly enjoy:
-
-1. Complete testing coverage
-2. Command line creation scripts
-3. VSCode helpers
-4. Web-based front-end?
+Still lots to do to make this into a tool that others will truly enjoy. See the [Roadmap Project](./projects/1) for what's coming next.
 
 ## Installation
 
