@@ -23,7 +23,13 @@ Still lots to do to make this into a tool that others will truly enjoy. See the 
 Simply install this package as a dependency in your note project:
 
 ```sh
-> npm install notepack
+> npm install notepack-cli
+```
+
+**NOTE:** When installed as a local dependency you will not be able to immediately take advantage of the `notepack` CLI command. To fix this, you must add the local `node_modules/.bin` folder to your path. Add this to your `.bash_profile` or `.zschrc` file to enable this:
+
+```sh
+export PATH="./node_modules/.bin:$PATH"
 ```
 
 ### Configuration
