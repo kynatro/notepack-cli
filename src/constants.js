@@ -1,4 +1,5 @@
 const path = require('path');
+// TODO: Gracefully handle absence of configuration
 const configuration = require('../project-config.json');
 
 /**
