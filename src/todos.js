@@ -236,8 +236,11 @@ if (require.main === module) {
 
 module.exports = {
   default: getTodos,
+  cleanTodo,
+  formatAssignment,
   getAssignment,
   getAssignmentAlias,
   getTodos,
-  getTodosAssignedTo
+  getTodosAssignedTo,
+  groupName
 };
