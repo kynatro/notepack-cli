@@ -14,7 +14,7 @@ NotePack also understands the concept of teams and will make distinctions betwee
 
 ## Roadmap
 
-Still lots to do to make this into a tool that others will truly enjoy. See the [Roadmap Project](./projects/1) for what's coming next.
+Still lots to do to make this into a tool that others will truly enjoy. See the [Roadmap Project](../../projects/1) for what's coming next.
 
 ## Installation
 
