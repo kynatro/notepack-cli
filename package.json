@@ -1,12 +1,14 @@
 {
   "name": "notepack-cli",
-  "version": "1.0.0-prerelease.1",
+  "version": "1.0.0-prerelease.2",
   "description": "Local note taking CLI helpers",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
-  "bin": "./bin/notepack",
+  "bin": {
+    "notepack": "./bin/notepack"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kynatro/notepack-cli.git"
