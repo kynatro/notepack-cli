@@ -42,11 +42,16 @@ function readFileSync(directoryPath) {
 function statSync(directoryPath) {
   const dirname = path.dirname(directoryPath);
   const basename = path.basename(directoryPath);
+  const birthtime = new Date();
+  const ctime = birthtime;
 
   return {
     dirname,
     basename,
-    isDirectory: function () { return mockFiles[this.dirname][this.basename] === 'directory'; }
+    isDirectory: function () { return mockFiles[this.dirname][this.basename] === 'directory'; },
+    isFile: function() { return mockFiles[this.dirname][this.basename] !== 'directory'; },
+    birthtime,
+    ctime
   };
 }
 
