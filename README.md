@@ -12,6 +12,15 @@ NotePack will collate all todos found in any Markdown file in your notes folder,
 
 NotePack also understands the concept of teams and will make distinctions between todos you have assigned for yourself, and todos you expect others to accomplish to help you keep them accountable (or bug them to make sure they're actually delivering what you expect on time). NotePack will assume any todo that doesn't start with an `@mention` syntax is assigned to you and place all your open todos in your note project's root `README.md` file. Create a team folder for your team members with `README.md` files in each team member folder and NotePack will place corresponding todo lists for each team member in their `README.md` file - great for people managers!
 
+## Roadmap
+
+Still lots to do to make this into a tool that others will truly enjoy:
+
+1. Complete testing coverage
+2. Command line creation scripts
+3. VSCode helpers
+4. Web-based front-end?
+
 ## Installation
 
 > Prerequisite: As this is distributed as an npm package, you must initiate your notes project as an npm project first so you can install this package as a dependency
@@ -122,7 +131,7 @@ aliases:
 - John
 - John Doe
 - Johnathan
-===
+---
 ```
 
 #### aliases
