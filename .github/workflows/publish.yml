@@ -9,7 +9,7 @@ on:
       [created]
 
 jobs:
-  publish-npm:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,22 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Publish module
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
-
-  publish-gpr:
-    needs: publish-npm
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
           registry-url: https://npm.pkg.github.com/
-      - name: Install dependencies
-        run: npm ci
       - name: Publish module
         run: npm publish
         env:
