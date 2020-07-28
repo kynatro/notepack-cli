@@ -10,42 +10,45 @@ done
 # Real directory the file exists
 DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 
-# Current Working Directory
-CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# Path to script files
+SCRIPTS_PATH="$DIR/../src"
 
+# Filepath for active watch process monitoring
+WATCHING_PATH="$DIR/../.WATCHING"
 
 start_watching () {
-  node $DIR/../src/watch.js --background > /dev/null &
+  node $SCRIPTS_PATH/watch.js --background > /dev/null &
   disown
-  echo -n $! >> $DIR/../.WATCHING
+  echo -n $! >> $WATCHING_PATH
   printf "\033[0;34mWatching notes in the background (pid: $!)...\033[0m\n"
 }
 
 stop_watching () {
-  kill $(< $DIR/../.WATCHING)
+  printf "\033[0;34mNo longer watching notes in the background\033[0m\n"
+  kill $(< $WATCHING_PATH)
 }
 
 todos () {
   if [ $1 ]
     then
-      node $DIR/../src/todos.js --asignedTo $1
+      node $SCRIPTS_PATH/todos.js --asignedTo $1
     else
-      node $DIR/../src/todos.js
+      node $SCRIPTS_PATH/todos.js
   fi
 }
 
 update() {
-  node $DIR/../src/updateTodos.js
+  node $SCRIPTS_PATH/updateTodos.js
 }
 
 watch() {
-  if [ -f ".WATCHING" ]
+  if [ -f $WATCHING_PATH ]
     then
-      if ps -p $(< .WATCHING) > /dev/null
+      if ps -p $(< $WATCHING_PATH) > /dev/null
         then
-          printf "\033[0;31mAlready watching (pid: $(< ".WATCHING"))...\033[0m\n"
+          printf "\033[0;31mAlready watching (pid: $(< $WATCHING_PATH))...\033[0m\n"
         else
-          rm .WATCHING
+          rm $WATCHING_PATH
           start_watching
       fi
     else
@@ -55,7 +58,7 @@ watch() {
 
 case "$1" in
 "configure")
-  node $DIR/../src/configure.js --cwd $CWD
+  node $SCRIPTS_PATH/configure.js
   ;;
 "stop")
   stop_watching
