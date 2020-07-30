@@ -1,22 +1,12 @@
-const path = require('path');
-// TODO: Gracefully handle absence of configuration
-const configuration = require('../project-config.json');
+const { argv } = require('yargs');
 
 /**
- * App root folder
+ * User configuration file
  * 
  * @constant
  * @type {String}
  */
-const APP_ROOT_FOLDER = path.resolve(configuration.appRootFolder);
-
-/**
- * Base folders to scan
- *
- * @constant
- * @type {String}
- */
-const BASE_FOLDERS = configuration.baseFolders;
+const CONFIG_FILE_NAME = '.notepack_config';
 
 /**
  * Invalid file type patterns
@@ -35,49 +25,21 @@ const FILE_IGNORE = ['.bin', '.git', '.vscode', 'node_modules', '.DS_Store', 'Th
 const MATCH_PATTERN = "-\\s?\\[ \\]"
 
 /**
- * Team base folder
- *
- * @constant
- * @type {String}
- */
-const TEAM_FOLDER = configuration.teamFolder;
-
-/**
- * Anchor heading level
+ * Is the script running in the background
  * 
- * The H tag level of the anchor heading.
+ * Reads the optional flag to identify the script as running in the
+ * background.
+ * 
+ * @requires argv
  * 
  * @constant
- * @type {String}
+ * @type {Boolean}
  */
-const TODO_ANCHOR_HEADING_LEVEL = configuration.todoAnchorHeadingLevel;
-
-/**
- * Anchor heading for a section of todos in a README.md file.
- *
- * @constant
- * @type {String}
- */
-const TODO_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${configuration.todoAnchor}`;
-
-/**
- * Todo group heading level
- * 
- * The H tag level for groups of todos. Should be a lower H tag value
- * than TODO_ANCHOR_HEADING_LEVEL.
- * 
- * @constant
- * @type {String}
- */
-const TODO_GROUP_HEADING_LEVEL = configuration.todoGroupHeadingLevel;
+const RUNNING_IN_BACKGROUND = Boolean(argv.background);
 
 module.exports = {
-  APP_ROOT_FOLDER,
-  BASE_FOLDERS,
+  CONFIG_FILE_NAME,
   FILE_IGNORE,
   MATCH_PATTERN,
-  TEAM_FOLDER,
-  TODO_ANCHOR,
-  TODO_ANCHOR_HEADING_LEVEL,
-  TODO_GROUP_HEADING_LEVEL
+  RUNNING_IN_BACKGROUND
 }
