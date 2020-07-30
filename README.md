@@ -26,14 +26,6 @@ Simply install this package as a global module:
 > npm install -g notepack-cli
 ```
 
-### Operating as a local dependency
-
-You can manage multiple note projects on a single machine by installing the package as a local dependency. Since local dependency `bin` files are not part of the `$PATH` by default, you will not be able to immediately take advantage of the `notepack` CLI command. To fix this, you must add the local `node_modules/.bin` folder to your path. Add this to your `.bash_profile` or `.zshrc` file to enable this:
-
-```sh
-export PATH="./node_modules/.bin:$PATH"
-```
-
 ### Configuration
 
 Once you have installed NotePack you will need to configure your project. This only needs to be done once:
