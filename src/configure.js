@@ -1,6 +1,5 @@
-const fs = require('fs');
-const path = require('path');
 const readline = require('readline');
+const { writeUserConfig } = require('./user-config');
 
 const questions = [
   {
@@ -78,11 +77,12 @@ function askQuestion({
  * Confirm configuration
  * 
  * Display the formatted configuration JSON Object and request the user to
- * confirm. If confirmed, calls writeConfiguration() to write the supplied
+ * confirm. If confirmed, calls writeUserConfig() to write the supplied
  * configuration JSON Object to a local JSON file. If not confirmed, the
  * Promise is rejected with an error message.
  * 
  * @requires JSON
+ * @requires notepack-cli/user-config.writeUserConfig
  * 
  * @param {Object} configuration JSON configuration Object
  * @param {Readline.Interface} rl a Readline Interface to ask questions with
@@ -95,7 +95,7 @@ function confirmConfiguration(configuration = {}, rl) {
 
     rl.question('Continue with this as your configuration (yes/no)? ', (answer) => {
       if (/^y(es)?$/.test(answer)) {
-        writeConfiguration(configuration)
+        writeUserConfig(configuration)
           .then(() => resolve('🎉 Configuration file written successfully!'))
           .catch((err) => reject(err));
       } else if (/^no?$/.test(answer)) {
@@ -108,46 +108,13 @@ function confirmConfiguration(configuration = {}, rl) {
 }
 
 /**
- * Write configuration file
- * 
- * Writes the supplied configuration JSON Object to a file.
- * 
- * @requires fs
- * @requires path
- * @requires JSON
- * 
- * @param {Object} configuration JSON configuration Object
- * 
- * @return {Promise}
- */
-function writeConfiguration(configuration) {
-  const filePath = path.resolve(path.dirname(__dirname), 'project-config.json');
-
-  return new Promise((resolve, reject) => {
-    try {
-      const checkPath = fs.existsSync(filePath) ? filePath : path.dirname(filePath);
-      fs.accessSync(checkPath, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK);
-    } catch(err) {
-      reject(`${checkPath} is not writeable.`);
-    }
-  
-    fs.writeFile(filePath, JSON.stringify(configuration, null, 2), (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(`${filePath} written successfully!`);
-      }
-    })
-  });  
-}
-
-/**
  * Configure project
  * 
  * Initiate a configuration session for a project and write the configuration
  * to a local file for reference.
  * 
  * @async
+ * 
  * @requires Readline
  */
 async function configure() {
@@ -171,9 +138,13 @@ async function configure() {
   }
 
   await confirmConfiguration(configuration, rl)
-    .then(message => console.log(`\x1b[32m\x1b[1m\n${message}\x1b[0m`))
+    .then(message => {
+      console.log(`\x1b[32m\x1b[1m\n${message}\x1b[0m`);
+      console.log('\nRun', '\x1b[33m\x1b[1mnotepack watch\x1b[0m', 'to begin monitoring your notes.\n')
+    })
     .catch((err) => {
       console.error(`\x1b[31m\x1b[1m\n${err}\x1b[0m`);
+      console.log('Be sure to run', '\x1b[33m\x1b[1mnotepack configure\x1b[0m', 'to monitor your notes.\n');
     });
   
   rl.close();
