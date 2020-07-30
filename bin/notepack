@@ -16,16 +16,37 @@ SCRIPTS_PATH="$DIR/../src"
 # Filepath for active watch process monitoring
 WATCHING_PATH="$DIR/../.WATCHING"
 
+is_configured () {
+  if [ -f "$HOME/.notepack_config" ]
+    then return 0
+    else
+      echo -e "Please configure your Notepack first by running \x1b[1;33m\x1b[1mnotepack configure\x1b[0m"
+      return 1
+  fi
+}
+
+is_watching () {
+  if [ -f $WATCHING_PATH ]
+    then return 0
+    else return 1
+  fi
+}
+
 start_watching () {
   node $SCRIPTS_PATH/watch.js --background > /dev/null &
   disown
   echo -n $! >> $WATCHING_PATH
-  printf "\033[0;34mWatching notes in the background (pid: $!)...\033[0m\n"
+  echo -e "\x1b[0;34mWatching notes in the background (pid: $!)...\x1b[0m"
 }
 
 stop_watching () {
-  printf "\033[0;34mNo longer watching notes in the background\033[0m\n"
-  kill $(< $WATCHING_PATH)
+  if is_watching
+    then
+      echo -e "\x1b[0;34mNo longer watching notes in the background\x1b[0m"
+      kill $(< $WATCHING_PATH)
+    else
+      echo -e "Not watching notes in the background"
+  fi
 }
 
 todos () {
@@ -46,7 +67,7 @@ watch() {
     then
       if ps -p $(< $WATCHING_PATH) > /dev/null
         then
-          printf "\033[0;31mAlready watching (pid: $(< $WATCHING_PATH))...\033[0m\n"
+          echo -e "\x1b[0;31mAlready watching (pid: $(< $WATCHING_PATH))...\x1b[0m"
         else
           rm $WATCHING_PATH
           start_watching
@@ -61,18 +82,18 @@ case "$1" in
   node $SCRIPTS_PATH/configure.js
   ;;
 "stop")
-  stop_watching
+  if is_configured; then stop_watching; fi
   ;;
 "todos")
-  todos $2
+  if is_configured; then todos $2; fi
   ;;
 "update")
-  update
+  if is_configured; then update; fi
   ;;
 "watch")
-  watch
+  if is_configured; then watch; fi
   ;;
 *)
-  todos
+  if is_configured; then todos; fi
   ;;
 esac
