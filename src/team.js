@@ -29,7 +29,7 @@ function formatAlias(alias) {
  * @requires fm
  * @requires fs
  * @requires path
- * @requires notepack/helpers.isValidNode
+ * @requires notepack-cli/helpers.isValidNode
  * 
  * @return {Array} Array of team members
  */

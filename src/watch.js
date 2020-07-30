@@ -33,8 +33,8 @@ function exitScript() {
  * 
  * Iterates through all team members and updates their respective folders
  * 
- * @requires notepack/team.getTeamMembers
- * @requires notepack/updateTodos.updateTodosForPerson
+ * @requires notepack-cli/team.getTeamMembers
+ * @requires notepack-cli/updateTodos.updateTodosForPerson
  */
 function updateTodosForAll() {
   console.log('Updating todos for all:');
@@ -54,7 +54,7 @@ function updateTodosForAll() {
  * 
  * Updates the todos assigned to the project owner
  * 
- * @requires notepack/updateTodos.updateTodosForPerson
+ * @requires notepack-cli/updateTodos.updateTodosForPerson
  */
 function updateTodosForMe() {
   console.log('Updating todos for me');

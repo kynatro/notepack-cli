@@ -86,7 +86,7 @@ function getAssignmentAlias(assignment) {
  * @requires fm
  * @requires fs
  * @requires path
- * @requires notepack/helpers.isValidNode
+ * @requires notepack-cli/helpers.isValidNode
  * @param {String} [pathScope=''] The path to scan for todos
  * @param {Array} [todos=[]] The array of todos to populate
  * @returns {Array}
