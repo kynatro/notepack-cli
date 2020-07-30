@@ -1,10 +1,10 @@
 const { getTodos, getTodosAssignedTo, getAssignmentAlias } = require('./todos');
 const { getTeamMembers } = require('./team');
-const argv = require('yargs').argv;
+const { argv } = require('yargs');
 const fs = require('fs');
 const path = require('path');
-const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./constants');
-const RUNNING_IN_BACKGROUND = argv.background;
+const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./user-config').getUserConfig();
+const { RUNNING_IN_BACKGROUND } = require('./constants');
 
 /**
  * Get todo group names

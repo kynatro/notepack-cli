@@ -1,10 +1,11 @@
-const argv = require('yargs').argv;
+const { argv } = require('yargs');
 const fs = require('fs');
 const path = require('path');
 const fm = require('front-matter');
 const { isValidNode } = require('./helpers');
 const { getTeamMemberAliases } = require('./team');
-const { APP_ROOT_FOLDER, MATCH_PATTERN } = require('./constants');
+const { APP_ROOT_FOLDER } = require('./user-config').getUserConfig();
+const { MATCH_PATTERN } = require('./constants');
 
 /**
  * Clean todo string
