@@ -63,7 +63,7 @@ update() {
 }
 
 watch() {
-  if [ -f $WATCHING_PATH ]
+  if is_watching
     then
       if ps -p $(< $WATCHING_PATH) > /dev/null
         then
