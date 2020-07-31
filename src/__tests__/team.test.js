@@ -1,5 +1,9 @@
 'use strict';
 
+const userConfig = require('../userConfig');
+const notepackConfigMock = require('../__mocks__/notepack_config.mock')
+userConfig.getUserConfig = jest.fn().mockReturnValue(notepackConfigMock);
+
 const { formatAlias, getTeamMembers, getTeamMemberAliases } = require('../team');
 const { MOCK_FILE_INFO, TEAM_MEMBERS } = require('../__mocks__/notes.mock');
 

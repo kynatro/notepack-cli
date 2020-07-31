@@ -21,7 +21,7 @@ let USER_CONFIG;
  */
 function getUserConfig() {
   if (!USER_CONFIG) {
-    USER_CONFIG = readUserConfig();
+    USER_CONFIG = model.readUserConfig();
   }
 
   /**
@@ -139,9 +139,11 @@ function writeUserConfig(configuration) {
   });
 }
 
-module.exports = {
+const model = {
   CONFIG_FILE_NAME,
   getUserConfig,
   readUserConfig,
   writeUserConfig
 };
+
+module.exports = model;

@@ -4,7 +4,7 @@ const path = require('path');
 const fm = require('front-matter');
 const { isValidNode } = require('./helpers');
 const { getTeamMemberAliases } = require('./team');
-const { APP_ROOT_FOLDER } = require('./user-config').getUserConfig();
+const { APP_ROOT_FOLDER } = require('./userConfig').getUserConfig();
 const { MATCH_PATTERN } = require('./constants');
 
 /**

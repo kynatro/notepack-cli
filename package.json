@@ -30,11 +30,6 @@
     "jest": "^26.1.0",
     "js-yaml": "^3.14.0"
   },
-  "jest": {
-    "moduleNameMapper": {
-      "project-config.json": "<rootDir>/__mocks__/project-config.json"
-    }
-  },
   "eslintConfig": {
     "env": {
       "node": true,

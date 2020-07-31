@@ -1,9 +1,13 @@
 'use strict';
 
+const userConfig = require('../userConfig');
+const notepackConfigMock = require('../__mocks__/notepack_config.mock')
+userConfig.getUserConfig = jest.fn().mockReturnValue(notepackConfigMock);
+
 const path = require('path');
 const { cleanTodo, formatAssignment, getAssignment, getAssignmentAlias, getTodos, getTodosAssignedTo, groupName } = require('../todos');
 const { MOCK_FILE_INFO, NOTES } = require('../__mocks__/notes.mock');
-const { APP_ROOT_FOLDER } = require('../constants');
+const { APP_ROOT_FOLDER } = require('../userConfig').getUserConfig();
 
 jest.mock('fs');
 

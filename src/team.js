@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const fm = require('front-matter');
 const { isValidNode } = require('./helpers');
-const { TEAM_FOLDER, APP_ROOT_FOLDER } = require('./user-config').getUserConfig();
+const { TEAM_FOLDER, APP_ROOT_FOLDER } = require('./userConfig').getUserConfig();
 
 /**
  * Format an alias
