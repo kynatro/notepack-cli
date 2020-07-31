@@ -1,9 +1,33 @@
+const os = require('os');
+const path = require('path');
 const readline = require('readline');
 const { writeUserConfig } = require('./user-config');
 
+/**
+ * appRootFolder default value
+ * 
+ * Returns the PWD. If PWD is the same as the module path, returns the
+ * path for a "Notes" folder in the user's home directory.
+ * 
+ * @requires os
+ * @requires path
+ * 
+ * @returns {String}
+ */
+function defaultAppRootFolder() {
+  const pwd = process.env.PWD;
+  const modulePath = path.dirname(__dirname);
+
+  if (modulePath === pwd) {
+    return path.resolve(os.homedir(), 'Notes');
+  }
+
+  return pwd;
+}
+
 const questions = [
   {
-    defaultValue: process.env.PWD,
+    defaultValue: defaultAppRootFolder(),
     key: 'appRootFolder',
     text: 'Application root folder location'
   },
