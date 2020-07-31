@@ -1,6 +1,6 @@
 const yaml = require('js-yaml');
 const path = require('path');
-const { APP_ROOT_FOLDER, TEAM_FOLDER } = require('../constants');
+const { APP_ROOT_FOLDER, TEAM_FOLDER } = require('../userConfig').getUserConfig();
 
 const TEAM_FOLDER_PATH = path.resolve(APP_ROOT_FOLDER, TEAM_FOLDER);
 const TEAM_MEMBERS = {
