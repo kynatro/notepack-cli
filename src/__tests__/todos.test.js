@@ -7,7 +7,7 @@ userConfig.getUserConfig = jest.fn().mockReturnValue(notepackConfigMock);
 const path = require('path');
 const { cleanTodo, formatAssignment, getAssignment, getAssignmentAlias, getTodos, getTodosAssignedTo, groupName } = require('../todos');
 const { MOCK_FILE_INFO, NOTES } = require('../__mocks__/notes.mock');
-const { APP_ROOT_FOLDER } = require('../userConfig').getUserConfig();
+const { APP_ROOT_FOLDER } = notepackConfigMock;
 
 jest.mock('fs');
 
