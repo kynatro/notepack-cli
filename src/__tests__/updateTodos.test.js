@@ -131,9 +131,24 @@ describe('updateTodosForFolders()', () => {
 });
 
 describe('updateTodosForPerson()', () => {
-  test.todo('writes todos for an assigned user to the README.md file for the team member');
+  beforeEach(() => {
+    updateTodos.writeTodos = jest.fn();
+  })
+
+  test('calls writeTodos when a team member is passed in', () => {
+    updateTodos.updateTodosForPerson('Jane');
+    expect(updateTodos.writeTodos).toHaveBeenCalledWith(expect.stringContaining('Jane'), expect.any(Array));
+  });
   
-  test.todo('writes todos for project owner to the project root README.md file when assigned user is not set');
+  test('calls writeTodos for the project root README when no team member is passed in', () => {
+    updateTodos.updateTodosForPerson();
+    expect(updateTodos.writeTodos).toHaveBeenCalledWith(path.join(APP_ROOT_FOLDER, 'README.md'), expect.any(Array));
+  });
+  
+  test('calls writeTodos for the project root README when "me" is passed in', () => {
+    updateTodos.updateTodosForPerson('me');
+    expect(updateTodos.writeTodos).toHaveBeenCalledWith(path.join(APP_ROOT_FOLDER, 'README.md'), expect.any(Array));
+  });
 });
 
 describe('writeTodos()', () => {
