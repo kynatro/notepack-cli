@@ -15,7 +15,7 @@ let USER_CONFIG;
  * @async
  * 
  * @requires path
- * @requires notepack-cli/user-config.readUserConfig
+ * @requires notepack-cli/userConfig.readUserConfig
  * 
  * @returns {Object}
  */

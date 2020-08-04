@@ -14,7 +14,7 @@ const CONFIG_FILE_NAME = '.notepack_config';
  * @constant
  * @type {Array}
 */
-const FILE_IGNORE = ['.bin', '.git', '.vscode', 'node_modules', '.DS_Store', 'Thumbs.db', 'scripts', 'src', '.(ttf|woff)$', '.s?css$', '.sass$', '.js(on)?$', '.editorconfig', '.svg$', 'README.md']
+const FILE_IGNORE = ['archive', '.bin', '.git', '.vscode', 'node_modules', '.DS_Store', 'Thumbs.db', 'scripts', 'src', '.(ttf|woff)$', '.s?css$', '.sass$', '.js(on)?$', '.editorconfig', '.svg$', 'README.md']
 
 /**
  * Todo match pattern

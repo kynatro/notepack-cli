@@ -3,8 +3,21 @@ const { getTeamMembers } = require('./team');
 const { argv } = require('yargs');
 const fs = require('fs');
 const path = require('path');
-const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./user-config').getUserConfig();
+const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./userConfig').getUserConfig();
 const { RUNNING_IN_BACKGROUND } = require('./constants');
+
+const model = {
+  default: updateTodosForPerson,
+  getGroupNames,
+  groupRelativePath,
+  groupedTodos,
+  isValidFolder,
+  updateTodosForFolders,
+  updateTodosForPerson,
+  writeTodos
+};
+
+module.exports = model;
 
 /**
  * Get todo group names
@@ -28,6 +41,24 @@ function getGroupNames(todos) {
 }
 
 /**
+ * Get the relative path to a group file
+ * 
+ * Returns an encoded relative path to a group file relative to a README.md
+ * being written to.
+ * 
+ * @param {String} readmeFilePath Base file path to compare filePath to
+ * @param {String} groupFilePath Group file path
+ * 
+ * @requires path
+ * 
+ * @returns {String}
+ */
+function groupRelativePath(readmeFilePath, groupFilePath) {
+  const relativeFilePath = path.relative(path.dirname(readmeFilePath), path.join(APP_ROOT_FOLDER, groupFilePath));
+  return encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
+}
+
+/**
  * Build Grouped Todos String
  *
  * Builds a string of todos grouped by file and ordered by date. Automatically
@@ -38,6 +69,9 @@ function getGroupNames(todos) {
  * @param {Object} options Additional options
  *   @param {String} prefix Prefix in front of group of todos
  *
+ * @requires path
+ * @requires notepack-cli/updateTodos.getGroupNames
+ * 
  * @return {String}
  */
 function groupedTodos(todos, filePath, options = {}) {
@@ -46,16 +80,29 @@ function groupedTodos(todos, filePath, options = {}) {
 
   groupNames.forEach(groupName => {
     const groupTodos = todos.filter((todo) => todo.groupName === groupName).sort((a, b) => a.id > b.id ? 1 : -1);
-    // Get relative path to ensure links are correct
-    const relativeFilePath = path.relative(path.dirname(filePath), path.join(APP_ROOT_FOLDER, groupTodos[0].filePath));
-    const groupPath = encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
 
     groupedStr = `${groupedStr}
-${TODO_GROUP_HEADING_LEVEL} [${groupName}](${groupPath})
+${TODO_GROUP_HEADING_LEVEL} [${groupName}](${groupRelativePath(filePath, groupTodos[0].filePath)})
 ${groupTodos.map(todo => `- [ ] ${todo.todo}`).join('\n')}`;
   });
 
   return groupedStr;
+}
+
+/**
+ * Determines if a folder is valid for processing
+ * 
+ * Rejects folders that contain the word "archive" and folders in the
+ * project's TEAM_FOLDER.
+ * 
+ * @param {String} nodePathName Folder pathname
+ * @returns {Boolean}
+ */
+function isValidFolder(nodePathName) {
+  return (
+    !nodePathName.toLowerCase().includes('archive') &&
+    !nodePathName.startsWith(path.join(APP_ROOT_FOLDER, TEAM_FOLDER))
+  )
 }
 
 /**
@@ -67,24 +114,19 @@ ${groupTodos.map(todo => `- [ ] ${todo.todo}`).join('\n')}`;
  * @param {Array} folders Array of folder names at project root
  */
 function updateTodosForFolders(folders = []) {
-  const isValidFolder = (nodePathName) => (
-    !nodePathName.toLowerCase().includes('archive') &&
-    !nodePathName.startsWith(path.join(APP_ROOT_FOLDER, TEAM_FOLDER))
-  );
-
   folders.forEach(folder => {
     fs.readdirSync(path.resolve(APP_ROOT_FOLDER, folder)).forEach((node) => {
       const nodePathName = path.resolve(APP_ROOT_FOLDER, folder, node);
       const nodeStats = fs.statSync(nodePathName);
 
-      if (nodeStats.isDirectory() && isValidFolder(nodePathName)) {
+      if (nodeStats.isDirectory() && model.isValidFolder(nodePathName)) {
         const readmeFilepath = path.join(nodePathName, 'README.md');
 
         // Update the README.md file if it exists
         if (fs.existsSync(readmeFilepath)) {
           const todos = getTodos(nodePathName);
 
-          writeTodos(readmeFilepath, todos);
+          model.writeTodos(readmeFilepath, todos);
         }
 
         updateTodosForFolders([nodePathName]);
@@ -116,7 +158,7 @@ function updateTodosForPerson(assignedTo = 'me') {
     filePath = path.join(APP_ROOT_FOLDER, 'README.md');
   }
 
-  writeTodos(filePath, todos);
+  model.writeTodos(filePath, todos);
 }
 
 /**
@@ -186,9 +228,3 @@ if (require.main === module) {
     updateTodosForFolders(BASE_FOLDERS);
   }
 }
-
-module.exports = {
-  default: updateTodosForPerson,
-  updateTodosForPerson,
-  updateTodosForFolders
-};

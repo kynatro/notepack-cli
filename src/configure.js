@@ -106,7 +106,7 @@ function askQuestion({
  * Promise is rejected with an error message.
  * 
  * @requires JSON
- * @requires notepack-cli/user-config.writeUserConfig
+ * @requires notepack-cli/userConfig.writeUserConfig
  * 
  * @param {Object} configuration JSON configuration Object
  * @param {Readline.Interface} rl a Readline Interface to ask questions with
