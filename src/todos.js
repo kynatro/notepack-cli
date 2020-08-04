@@ -128,7 +128,7 @@ function getTodos(pathScope = '', todos = []) {
             });
           });
         }
-      } else if (nodeStats.isDirectory()) {
+      } else if (nodeStats.isDirectory() && !nodePathname.toLowerCase().includes('archive')) {
         todos = getTodos(nodePathname, todos);
       }
     }
