@@ -18,7 +18,18 @@ const NOTES = {
 - [ ] Self-assigned
 - [ ] @John assigned`,
   '2020-07-26 Note 2.md': `## Follow-up
-- [ ] @Jane assigned`
+- [ ] @Jane assigned`,
+  'Notes': 'directory',
+  'Notes/README.md': '# Notes',
+  'Notes/Projects': 'directory',
+  'Notes/Projects/Project 1': 'directory',
+  'Notes/Projects/Project 1/README.md': '# Project 1',
+  'Notes/Projects/Project 1/Note 1.md': '- [ ] @Joe do things',
+  'Notes/Projects/Project 2': 'directory',
+  'Notes/Projects/Project 2/Note 1.md': '- [ ] @Joe do things',
+  'Notes/archives': 'directory',
+  'Notes/archives/Note 3.md': `- [ ] Will not be processed`,
+  'Notes/archives/README.md': 'Will not be processed'
 }
 
 let MOCK_FILE_INFO = {};

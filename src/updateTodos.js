@@ -6,6 +6,19 @@ const path = require('path');
 const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./userConfig').getUserConfig();
 const { RUNNING_IN_BACKGROUND } = require('./constants');
 
+const model = {
+  default: updateTodosForPerson,
+  getGroupNames,
+  groupRelativePath,
+  groupedTodos,
+  isValidFolder,
+  updateTodosForFolders,
+  updateTodosForPerson,
+  writeTodos
+};
+
+module.exports = model;
+
 /**
  * Get todo group names
  * 
@@ -77,6 +90,22 @@ ${groupTodos.map(todo => `- [ ] ${todo.todo}`).join('\n')}`;
 }
 
 /**
+ * Determines if a folder is valid for processing
+ * 
+ * Rejects folders that contain the word "archive" and folders in the
+ * project's TEAM_FOLDER.
+ * 
+ * @param {String} nodePathName Folder pathname
+ * @returns {Boolean}
+ */
+function isValidFolder(nodePathName) {
+  return (
+    !nodePathName.toLowerCase().includes('archive') &&
+    !nodePathName.startsWith(path.join(APP_ROOT_FOLDER, TEAM_FOLDER))
+  )
+}
+
+/**
  * Update todos for all folders containing README.MD files
  *
  * Recursively iterates through all folders and updates README.md files found
@@ -85,24 +114,19 @@ ${groupTodos.map(todo => `- [ ] ${todo.todo}`).join('\n')}`;
  * @param {Array} folders Array of folder names at project root
  */
 function updateTodosForFolders(folders = []) {
-  const isValidFolder = (nodePathName) => (
-    !nodePathName.toLowerCase().includes('archive') &&
-    !nodePathName.startsWith(path.join(APP_ROOT_FOLDER, TEAM_FOLDER))
-  );
-
   folders.forEach(folder => {
     fs.readdirSync(path.resolve(APP_ROOT_FOLDER, folder)).forEach((node) => {
       const nodePathName = path.resolve(APP_ROOT_FOLDER, folder, node);
       const nodeStats = fs.statSync(nodePathName);
 
-      if (nodeStats.isDirectory() && isValidFolder(nodePathName)) {
+      if (nodeStats.isDirectory() && model.isValidFolder(nodePathName)) {
         const readmeFilepath = path.join(nodePathName, 'README.md');
 
         // Update the README.md file if it exists
         if (fs.existsSync(readmeFilepath)) {
           const todos = getTodos(nodePathName);
 
-          writeTodos(readmeFilepath, todos);
+          model.writeTodos(readmeFilepath, todos);
         }
 
         updateTodosForFolders([nodePathName]);
@@ -134,7 +158,7 @@ function updateTodosForPerson(assignedTo = 'me') {
     filePath = path.join(APP_ROOT_FOLDER, 'README.md');
   }
 
-  writeTodos(filePath, todos);
+  model.writeTodos(filePath, todos);
 }
 
 /**
@@ -204,13 +228,3 @@ if (require.main === module) {
     updateTodosForFolders(BASE_FOLDERS);
   }
 }
-
-module.exports = {
-  default: updateTodosForPerson,
-  getGroupNames,
-  groupRelativePath,
-  groupedTodos,
-  updateTodosForFolders,
-  updateTodosForPerson,
-  writeTodos
-};

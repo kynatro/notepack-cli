@@ -2,12 +2,15 @@
 
 const userConfig = require('../userConfig');
 const notepackConfigMock = require('../__mocks__/notepack_config.mock')
-userConfig.getUserConfig = jest.fn().mockReturnValue(notepackConfigMock);
+userConfig.getUserConfig = jest.fn(() => notepackConfigMock);
+
+const updateTodos = require('../updateTodos');
+const { getGroupNames, groupRelativePath, groupedTodos, isValidFolder, updateTodosForFolders, updateTodosForPerson, writeTodos } = updateTodos;
 
 const path = require('path');
-const { getGroupNames, groupRelativePath, groupedTodos, updateTodosForFolders, updateTodosForPerson, writeTodos } = require('../updateTodos');
 const { MOCK_FILE_INFO, NOTES } = require('../__mocks__/notes.mock');
 const { todos: MOCK_TODOS, groupNames: MOCK_GROUP_NAMES } = require('../__mocks__/todos.mock');
+const { TEAM_FOLDER } = require('../__mocks__/notepack_config.mock');
 const { APP_ROOT_FOLDER, TODO_ANCHOR, TODO_GROUP_HEADING_LEVEL } = notepackConfigMock;
 const readmeFilePath = path.resolve(APP_ROOT_FOLDER, 'README.md');
 
@@ -92,12 +95,39 @@ describe('groupedTodos()', () => {
   });
 });
 
+describe('isValidFolder()', () => {
+  test('returns true for folders that are not archives or team folders', () => {
+    expect(isValidFolder('foobar')).toBeTruthy();
+  });
+
+  test('returns false for folders with "archive" in their name', () => {
+    expect(isValidFolder('archive')).toBeFalsy();
+  });
+
+  test('returns false for folders in the project TEAM_FOLDER', () => {
+    expect(isValidFolder(path.join(APP_ROOT_FOLDER, TEAM_FOLDER, 'Team Member'))).toBeFalsy();
+  });
+});
+
 describe('updateTodosForFolders()', () => {
-  test.todo('skips processing archive folders');
+  beforeEach(() => {
+    updateTodos.writeTodos = jest.fn();
+  });
 
-  test.todo('writes todos in a folder to the README.md in the folder');
+  test('skips processing folders when isValidFolder() returns false', () => {
+    updateTodos.updateTodosForFolders(['Notes']);
+    expect(updateTodos.writeTodos).not.toHaveBeenCalledWith(expect.stringContaining('archives'), expect.any(Array));
+  });
 
-  test.todo('does not write todos outside of the folder the README.md is in');
+  test('calls writeTodos for directories with README.md files', () => {
+    updateTodos.updateTodosForFolders(['Notes/Projects']);
+    expect(updateTodos.writeTodos).toHaveBeenCalledWith(expect.stringContaining('Project 1/README.md'), expect.any(Array));    
+  });
+  
+  test('does not call writeTodos for directories with README.md files', () => {
+    updateTodos.updateTodosForFolders(['Notes/Projects']);
+    expect(updateTodos.writeTodos).not.toHaveBeenCalledWith(expect.stringContaining('Project 2/README.md'), expect.any(Array));
+  });
 });
 
 describe('updateTodosForPerson()', () => {
