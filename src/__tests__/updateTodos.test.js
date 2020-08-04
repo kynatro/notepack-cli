@@ -7,6 +7,7 @@ userConfig.getUserConfig = jest.fn(() => notepackConfigMock);
 const updateTodos = require('../updateTodos');
 const { getGroupNames, groupRelativePath, groupedTodos, isValidFolder, updateTodosForFolders, updateTodosForPerson, writeTodos } = updateTodos;
 
+const fs = require('fs');
 const path = require('path');
 const { MOCK_FILE_INFO, NOTES } = require('../__mocks__/notes.mock');
 const { todos: MOCK_TODOS, groupNames: MOCK_GROUP_NAMES } = require('../__mocks__/todos.mock');
@@ -152,13 +153,50 @@ describe('updateTodosForPerson()', () => {
 });
 
 describe('writeTodos()', () => {
-  test.todo('returns false if file is not writable');
-  
-  test.todo('logs an error if file is not writable and not running in the background');
-  
-  test.todo('does not log an error if file is not writable and is running in the background');
+  test('returns false if file is not writable', () => {
+    fs.accessSync = jest.fn(() => {
+      throw new Error('error');
+    });
 
-  test.todo('writes todos to the end of the file if no TODO_ANCHOR can be found');
+    // Prevent error from logging
+    console.error = jest.fn();
 
-  test.todo('replaces the todo section in the file when TODO_ANCHOR is found');
+    expect(writeTodos('README.md', [])).toBeFalsy();
+  });
+  
+  test('logs an error if file is not writable and not running in the background', () => {
+    fs.accessSync = jest.fn(() => {
+      throw new Error('error');
+    });
+
+    // Prevent error from logging
+    console.error = jest.fn();
+
+    writeTodos('README.md', []);
+    expect(console.error).toHaveBeenCalled();
+  });
+  
+  test('writes todos to the end of the file if no TODO_ANCHOR can be found', () => {
+    fs.accessSync = jest.fn(() => true);
+    fs.readFileSync = jest.fn().mockReturnValue('# Start of File\n\n# End of File');
+    fs.writeFileSync = jest.fn();
+
+    const filePath = path.resolve(APP_ROOT_FOLDER, 'README.md');
+
+    writeTodos(filePath, MOCK_TODOS);
+
+    expect(fs.writeFileSync).toHaveBeenCalledWith(filePath, expect.stringContaining(`# End of File\n\n${TODO_ANCHOR}`));
+  });
+
+  test('replaces the todo section in the file when TODO_ANCHOR is found', () => {
+    fs.accessSync = jest.fn(() => true);
+    fs.readFileSync = jest.fn().mockReturnValue(`# Start of File\n\n${TODO_ANCHOR}\n\n# End of File`);
+    fs.writeFileSync = jest.fn();
+
+    const filePath = path.resolve(APP_ROOT_FOLDER, 'README.md');
+
+    writeTodos(filePath, MOCK_TODOS);
+
+    expect(fs.writeFileSync).toHaveBeenCalledWith(filePath, expect.stringContaining(`# Start of File\n\n${TODO_ANCHOR}`));
+  });
 });
