@@ -64,7 +64,9 @@ describe('getTodos()', () => {
   });
 
   test('contains all todos assigned to anyone', () => {
-    const todosLength = Object.values(NOTES).join('\n').match(/- \[ \]/gi).length;
+    // Archive folders are skipped
+    const validNotes = Object.keys(NOTES).filter(key => !/archive/gi.test(key)).map(key => NOTES[key]);
+    const todosLength = Object.values(validNotes).join('\n').match(/- \[ \]/gi).length;
 
     expect(getTodos().length).toEqual(todosLength);
   });
