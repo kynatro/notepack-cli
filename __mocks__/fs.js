@@ -21,6 +21,10 @@ function __setMockFiles(newMockFiles) {
   }
 }
 
+function accessSync() {
+  return true;
+}
+
 function existsSync(directoryPath) {
   const dirname = path.dirname(directoryPath);
   const basename = path.basename(directoryPath);
@@ -56,6 +60,7 @@ function statSync(directoryPath) {
 }
 
 fs.__setMockFiles = __setMockFiles;
+fs.accessSync = accessSync;
 fs.existsSync = existsSync;
 fs.readdirSync = readdirSync;
 fs.readFileSync = readFileSync;
