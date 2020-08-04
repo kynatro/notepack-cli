@@ -9,7 +9,7 @@ const { getGroupNames, groupRelativePath, groupedTodos, isValidFolder, updateTod
 
 const fs = require('fs');
 const path = require('path');
-const { MOCK_FILE_INFO, NOTES } = require('../__mocks__/notes.mock');
+const { MOCK_FILE_INFO } = require('../__mocks__/notes.mock');
 const { todos: MOCK_TODOS, groupNames: MOCK_GROUP_NAMES } = require('../__mocks__/todos.mock');
 const { TEAM_FOLDER } = require('../__mocks__/notepack_config.mock');
 const { APP_ROOT_FOLDER, TODO_ANCHOR, TODO_GROUP_HEADING_LEVEL } = notepackConfigMock;
@@ -116,17 +116,17 @@ describe('updateTodosForFolders()', () => {
   });
 
   test('skips processing folders when isValidFolder() returns false', () => {
-    updateTodos.updateTodosForFolders(['Notes']);
+    updateTodosForFolders(['Notes']);
     expect(updateTodos.writeTodos).not.toHaveBeenCalledWith(expect.stringContaining('archives'), expect.any(Array));
   });
 
   test('calls writeTodos for directories with README.md files', () => {
-    updateTodos.updateTodosForFolders(['Notes/Projects']);
+    updateTodosForFolders(['Notes/Projects']);
     expect(updateTodos.writeTodos).toHaveBeenCalledWith(expect.stringContaining('Project 1/README.md'), expect.any(Array));    
   });
   
   test('does not call writeTodos for directories with README.md files', () => {
-    updateTodos.updateTodosForFolders(['Notes/Projects']);
+    updateTodosForFolders(['Notes/Projects']);
     expect(updateTodos.writeTodos).not.toHaveBeenCalledWith(expect.stringContaining('Project 2/README.md'), expect.any(Array));
   });
 });
@@ -137,17 +137,17 @@ describe('updateTodosForPerson()', () => {
   })
 
   test('calls writeTodos when a team member is passed in', () => {
-    updateTodos.updateTodosForPerson('Jane');
+    updateTodosForPerson('Jane');
     expect(updateTodos.writeTodos).toHaveBeenCalledWith(expect.stringContaining('Jane'), expect.any(Array));
   });
   
   test('calls writeTodos for the project root README when no team member is passed in', () => {
-    updateTodos.updateTodosForPerson();
+    updateTodosForPerson();
     expect(updateTodos.writeTodos).toHaveBeenCalledWith(path.join(APP_ROOT_FOLDER, 'README.md'), expect.any(Array));
   });
   
   test('calls writeTodos for the project root README when "me" is passed in', () => {
-    updateTodos.updateTodosForPerson('me');
+    updateTodosForPerson('me');
     expect(updateTodos.writeTodos).toHaveBeenCalledWith(path.join(APP_ROOT_FOLDER, 'README.md'), expect.any(Array));
   });
 });
