@@ -3,28 +3,6 @@ const path = require('path');
 const readline = require('readline');
 const { writeUserConfig } = require('./userConfig');
 
-/**
- * appRootFolder default value
- * 
- * Returns the PWD. If PWD is the same as the module path, returns the
- * path for a "Notes" folder in the user's home directory.
- * 
- * @requires os
- * @requires path
- * 
- * @returns {String}
- */
-function defaultAppRootFolder() {
-  const pwd = process.env.PWD;
-  const modulePath = path.dirname(__dirname);
-
-  if (modulePath === pwd) {
-    return path.resolve(os.homedir(), 'Notes');
-  }
-
-  return pwd;
-}
-
 const questions = [
   {
     defaultValue: defaultAppRootFolder(),
@@ -57,6 +35,36 @@ const questions = [
     text: 'Todo group heading level (should be less than anchor heading)'
   }
 ];
+
+const model = {
+  askQuestion,
+  configure,
+  confirmConfiguration,
+  defaultAppRootFolder,
+  questions
+}
+
+/**
+ * appRootFolder default value
+ * 
+ * Returns the PWD. If PWD is the same as the module path, returns the
+ * path for a "Notes" folder in the user's home directory.
+ * 
+ * @requires os
+ * @requires path
+ * 
+ * @returns {String}
+ */
+function defaultAppRootFolder() {
+  const pwd = process.env.PWD;
+  const modulePath = path.dirname(__dirname);
+
+  if (modulePath === pwd) {
+    return path.resolve(os.homedir(), 'Notes');
+  }
+
+  return pwd;
+}
 
 /**
  * Ask a question
@@ -174,4 +182,8 @@ async function configure() {
   rl.close();
 }
 
-configure();
+if (require.main === module) {
+  configure();
+}
+
+module.exports = model;
