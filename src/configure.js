@@ -1,29 +1,7 @@
 const os = require('os');
 const path = require('path');
 const readline = require('readline');
-const { writeUserConfig } = require('./userConfig');
-
-/**
- * appRootFolder default value
- * 
- * Returns the PWD. If PWD is the same as the module path, returns the
- * path for a "Notes" folder in the user's home directory.
- * 
- * @requires os
- * @requires path
- * 
- * @returns {String}
- */
-function defaultAppRootFolder() {
-  const pwd = process.env.PWD;
-  const modulePath = path.dirname(__dirname);
-
-  if (modulePath === pwd) {
-    return path.resolve(os.homedir(), 'Notes');
-  }
-
-  return pwd;
-}
+const userConfig = require('./userConfig');
 
 const questions = [
   {
@@ -57,6 +35,36 @@ const questions = [
     text: 'Todo group heading level (should be less than anchor heading)'
   }
 ];
+
+const model = {
+  askQuestion,
+  configure,
+  confirmConfiguration,
+  defaultAppRootFolder,
+  questions
+}
+
+/**
+ * appRootFolder default value
+ * 
+ * Returns the PWD. If PWD is the same as the module path, returns the
+ * path for a "Notes" folder in the user's home directory.
+ * 
+ * @requires os
+ * @requires path
+ * 
+ * @returns {String}
+ */
+function defaultAppRootFolder() {
+  const pwd = process.env.PWD;
+  const modulePath = path.dirname(__dirname);
+
+  if (modulePath === pwd) {
+    return path.resolve(os.homedir(), 'Notes');
+  }
+
+  return pwd;
+}
 
 /**
  * Ask a question
@@ -119,7 +127,7 @@ function confirmConfiguration(configuration = {}, rl) {
 
     rl.question('Continue with this as your configuration (yes/no)? ', (answer) => {
       if (/^y(es)?$/.test(answer)) {
-        writeUserConfig(configuration)
+        userConfig.writeUserConfig(configuration)
           .then(() => resolve('🎉 Configuration file written successfully!'))
           .catch((err) => reject(err));
       } else if (/^no?$/.test(answer)) {
@@ -154,14 +162,14 @@ async function configure() {
   console.log('application root folder.\n');
 
   for (let i = 0; i < questions.length; i++) {
-    await askQuestion({
+    await model.askQuestion({
       ...questions[i],
       configuration,
       rl
     });
   }
 
-  await confirmConfiguration(configuration, rl)
+  await model.confirmConfiguration(configuration, rl)
     .then(message => {
       console.log(`\x1b[32m\x1b[1m\n${message}\x1b[0m`);
       console.log('\nRun', '\x1b[33m\x1b[1mnotepack watch\x1b[0m', 'to begin monitoring your notes.\n')
@@ -174,4 +182,8 @@ async function configure() {
   rl.close();
 }
 
-configure();
+if (require.main === module) {
+  configure();
+}
+
+module.exports = model;
