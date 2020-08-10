@@ -15,6 +15,8 @@ jest.mock('readline');
 
 beforeEach(() => {
   rl = readline.createInterface();
+
+  console.log = jest.fn();
 });
 
 describe('defaultAppRootFolder()', () => {
@@ -77,9 +79,10 @@ describe('askQuestion()', () => {
 
       expect.assertions(1);
       
-      expect(askQuestion({ callback, configuration, key, rl, text }).then(data => {
-        expect(true).toBeTruthy();
-      }));
+      expect(askQuestion({ callback, configuration, key, rl, text })
+        .then(data => {
+          expect(true).toBeTruthy();
+        }));
     });
 
     test('rejects when call to callback returns falsy', () => {
@@ -94,13 +97,17 @@ describe('askQuestion()', () => {
     });
 
     test('are called when passed in', () => {
-      askQuestion({ callback, configuration, key, rl, text });
+      askQuestion({ callback, configuration, key, rl, text })
+        .then(() => {})
+        .catch(() => {});
   
       expect(callback).toHaveBeenCalled();
     });
   
     test('are called with the user answer, configuration, and key', () => {
-      askQuestion({ callback, configuration, key, rl, text });
+      askQuestion({ callback, configuration, key, rl, text })
+        .then(() => {})
+        .catch(() => {});
 
       expect(callback).toHaveBeenCalledWith({
         answer,
@@ -112,7 +119,9 @@ describe('askQuestion()', () => {
     test('are supplied the defaultValue as answer when no user answer is given', () => {
       answer = null;
 
-      askQuestion({ callback, configuration, defaultValue, key, rl, text });
+      askQuestion({ callback, configuration, defaultValue, key, rl, text })
+        .then(() => {})
+        .catch(() => {});
 
       expect(callback).toHaveBeenCalledWith({
         answer: defaultValue,
@@ -138,6 +147,8 @@ describe('confirmConfiguration()', () => {
     answer = 'yes';
 
     rl.question = jest.fn().mockImplementationOnce((message, cb) => { cb(answer) });
+    
+    userConfig.writeUserConfig = jest.fn(() => Promise.resolve());
   });
 
   test('returns a Promise', () => {
@@ -145,8 +156,6 @@ describe('confirmConfiguration()', () => {
   });
 
   test('calls writeUserConfig when answer is "yes"', () => {
-    userConfig.writeUserConfig = jest.fn();
-
     confirmConfiguration(configuration, rl);
 
     expect(userConfig.writeUserConfig).toHaveBeenCalledWith(configuration);
@@ -155,16 +164,12 @@ describe('confirmConfiguration()', () => {
   test('calls writeUserConfig when answer is "y"', () => {
     answer = 'y';
 
-    userConfig.writeUserConfig = jest.fn();
-
     confirmConfiguration(configuration, rl);
 
     expect(userConfig.writeUserConfig).toHaveBeenCalledWith(configuration);
   });
 
   test('resolves when writeUserConfig is successful', () => {
-    userConfig.writeUserConfig = jest.fn(() => Promise.resolve());
-
     expect(confirmConfiguration(configuration, rl).then((data) => {
       expect(true).toBeTruthy();
     }));
