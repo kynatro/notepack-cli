@@ -1,7 +1,7 @@
 const os = require('os');
 const path = require('path');
 const readline = require('readline');
-const { writeUserConfig } = require('./userConfig');
+const userConfig = require('./userConfig');
 
 const questions = [
   {
@@ -127,7 +127,7 @@ function confirmConfiguration(configuration = {}, rl) {
 
     rl.question('Continue with this as your configuration (yes/no)? ', (answer) => {
       if (/^y(es)?$/.test(answer)) {
-        writeUserConfig(configuration)
+        userConfig.writeUserConfig(configuration)
           .then(() => resolve('🎉 Configuration file written successfully!'))
           .catch((err) => reject(err));
       } else if (/^no?$/.test(answer)) {
@@ -162,14 +162,14 @@ async function configure() {
   console.log('application root folder.\n');
 
   for (let i = 0; i < questions.length; i++) {
-    await askQuestion({
+    await model.askQuestion({
       ...questions[i],
       configuration,
       rl
     });
   }
 
-  await confirmConfiguration(configuration, rl)
+  await model.confirmConfiguration(configuration, rl)
     .then(message => {
       console.log(`\x1b[32m\x1b[1m\n${message}\x1b[0m`);
       console.log('\nRun', '\x1b[33m\x1b[1mnotepack watch\x1b[0m', 'to begin monitoring your notes.\n')
