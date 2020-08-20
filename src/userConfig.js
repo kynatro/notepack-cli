@@ -141,6 +141,7 @@ function writeUserConfig(configuration) {
 
 const model = {
   CONFIG_FILE_NAME,
+  CONFIG_FILE_PATH,
   getUserConfig,
   readUserConfig,
   writeUserConfig
