@@ -1,10 +1,17 @@
 'use strict';
 
-const notepackConfigMock = require('../__mocks__/notepack_config.mock')
 const userConfigModel = require('../userConfig');
 const { CONFIG_FILE_PATH, getUserConfig, readUserConfig, writeUserConfig } = userConfigModel;
 const helpers = require('../helpers');
 const fs = require('fs');
+const userConfigData = {
+  appRootFolder: 'example',
+  baseFolders: [],
+  teamFolder: 'Team',
+  todoAnchor: 'Open Todos',
+  todoAnchorHeadingLevel: '##',
+  todoGroupHeadingLevel: '####'
+};
 
 jest.mock('fs');
 
@@ -49,16 +56,14 @@ describe('readUserConfig()', () => {
     });
   
     test('returns JSON data from CONFIG_FILE_PATH if file exists', () => {
-      fs.readFileSync = jest.fn(() => JSON.stringify(notepackConfigMock));
+      fs.readFileSync = jest.fn(() => JSON.stringify(userConfigData));
 
-      expect(readUserConfig()).toEqual(notepackConfigMock);
+      expect(readUserConfig()).toEqual(userConfigData);
     });
   });
 });
 
 describe('writeUserConfig()', () => {
-  const userConfigData = { foo: 'bar' };
-
   describe('when isWriteable(CONFIG_FILE_PATH) is true', () => {
     beforeEach(() => {
       helpers.isWriteable = jest.fn(() => true);
