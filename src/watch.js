@@ -9,6 +9,13 @@ const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./userConfig').g
 // Watch location based on user specified APP_ROOT_FOLDER
 const watcher = chokidar.watch('**/*.md', { cwd: APP_ROOT_FOLDER });
 
+const model = {
+  exitScript,
+  updateTodosForAll,
+  updateTodosForMe,
+  watcher
+};
+
 /**
  * Clean up files
  * 
@@ -26,7 +33,7 @@ function exitScript() {
     fs.unlinkSync(watchingFilePath);
   }
 
-  watcher.close().then(() => process.exit());
+  model.watcher.close().then(() => process.exit());
 }
 
 /**
@@ -40,14 +47,14 @@ function exitScript() {
 function updateTodosForAll() {
   console.log('Updating todos for all:');
 
-  const teamMembers = getTeamMembers();
+  const teamMembers = team.getTeamMembers();
 
   teamMembers.forEach(({ name }) => {
     console.log(`Updating todos for ${name}...`);
-    updateTodosForPerson(name);
+    updateTodos.updateTodosForPerson(name);
   })
 
-  updateTodosForMe();
+  model.updateTodosForMe();
 }
 
 /**
@@ -59,7 +66,7 @@ function updateTodosForAll() {
  */
 function updateTodosForMe() {
   console.log('Updating todos for me');
-  updateTodosForPerson('Me');
+  updateTodos.updateTodosForPerson('Me');
 }
 
 /**
@@ -81,15 +88,15 @@ watcher.on('change', (path) => {
     if (path.includes(TEAM_FOLDER)) {
       const teamMember = path.replace(`${TEAM_FOLDER}/`, '').split('/')[0];
       console.log(`Updating todos for ${teamMember}`);
-      updateTodosForPerson(teamMember);
-      updateTodosForMe();
+      updateTodos.updateTodosForPerson(teamMember);
+      model.updateTodosForMe();
     }
     // Otherwise, update everything
     else {
-      updateTodosForAll();
+      model.updateTodosForAll();
 
       console.log('Updating todos for folders...');
-      updateTodosForFolders(BASE_FOLDERS);
+      updateTodos.updateTodosForFolders(BASE_FOLDERS);
     }
   }
 })
@@ -99,8 +106,13 @@ process.on('SIGINT', exitScript);
 process.on('SIGTERM', exitScript);
 process.on('EXIT', exitScript);
 
-// Start with a fresh update
-updateTodosForAll();
-updateTodosForFolders(BASE_FOLDERS);
+// Do not run this while testing
+if (!RUNNING_TESTS) {
+  // Start with a fresh update
+  model.updateTodosForAll();
+  updateTodos.updateTodosForFolders(BASE_FOLDERS);
+  
+  console.log('Watching folders...');
+}
 
-console.log('Watching folders...');
+module.exports = model;
