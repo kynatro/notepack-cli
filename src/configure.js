@@ -127,9 +127,11 @@ function confirmConfiguration(configuration = {}, rl) {
 
     rl.question('Continue with this as your configuration (yes/no)? ', (answer) => {
       if (/^y(es)?$/.test(answer)) {
-        userConfig.writeUserConfig(configuration)
-          .then(() => resolve('🎉 Configuration file written successfully!'))
-          .catch((err) => reject(err));
+        if (userConfig.writeUserConfig(configuration)) {
+          resolve('🎉 Configuration file written successfully!');
+        } else {
+          reject('Configuration file could not be written.');
+        }
       } else if (/^no?$/.test(answer)) {
         reject('Configuration was not written.');
       } else {
