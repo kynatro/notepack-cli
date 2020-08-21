@@ -175,11 +175,11 @@ async function configure() {
   await model.confirmConfiguration(configuration, rl)
     .then(message => {
       console.log(`\x1b[32m\x1b[1m\n${message}\x1b[0m`);
-      console.log('\nRun', '\x1b[33m\x1b[1mnotepack watch\x1b[0m', 'to begin monitoring your notes.\n')
+      console.log('\nRun \x1b[33m\x1b[1mnotepack watch\x1b[0m to begin monitoring your notes.\n')
     })
     .catch((err) => {
       console.error(`\x1b[31m\x1b[1m\n${err}\x1b[0m`);
-      console.log('Be sure to run', '\x1b[33m\x1b[1mnotepack configure\x1b[0m', 'to monitor your notes.\n');
+      console.log('Be sure to run \x1b[33m\x1b[1mnotepack configure\x1b[0m to monitor your notes.\n');
     });
   
   rl.close();
