@@ -63,6 +63,10 @@ function writeFileSync() {
   return true;
 }
 
+function unlinkSync() {
+  return true;
+}
+
 fs.__setMockFiles = __setMockFiles;
 fs.accessSync = accessSync;
 fs.existsSync = existsSync;
@@ -70,5 +74,6 @@ fs.readdirSync = readdirSync;
 fs.readFileSync = readFileSync;
 fs.statSync = statSync;
 fs.writeFileSync = writeFileSync;
+fs.unlinkSync = unlinkSync;
 
 module.exports = fs;
