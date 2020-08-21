@@ -3,9 +3,8 @@
 const notepackConfigMock = require('../__mocks__/notepack_config.mock')
 const userConfigModel = require('../userConfig');
 const { CONFIG_FILE_PATH, getUserConfig, readUserConfig, writeUserConfig } = userConfigModel;
+const helpers = require('../helpers');
 const fs = require('fs');
-const os = require('os');
-const path = require('path');
 
 jest.mock('fs');
 
@@ -58,5 +57,57 @@ describe('readUserConfig()', () => {
 });
 
 describe('writeUserConfig()', () => {
+  const userConfigData = { foo: 'bar' };
 
+  describe('when isWriteable(CONFIG_FILE_PATH) is true', () => {
+    beforeEach(() => {
+      helpers.isWriteable = jest.fn(() => true);
+    });
+
+    test('writes configuration to CONFIG_FILE_PATH', () => {
+      fs.writeFileSync = jest.fn();
+
+      writeUserConfig(userConfigData);
+
+      expect(fs.writeFileSync).toHaveBeenCalledWith(CONFIG_FILE_PATH, JSON.stringify(userConfigData, null, 2));
+    });
+
+    describe('when writeFileSync() is successful', () => {
+      beforeEach(() => {
+        fs.writeFileSync = jest.fn(() => true);
+      })
+
+      test('returns true', () => {
+        expect(writeUserConfig()).toBeTruthy();
+      });
+    });
+
+    describe('when writeFileSync() is unsuccessful', () => {
+      beforeEach(() => {
+        fs.writeFileSync = jest.fn(() => { throw Error() });
+
+        test('logs an error', () => {
+          console.error = jest.fn();
+
+          writeUserConfig();
+
+          expect(console.error).toHaveBeenCalled();
+        });
+
+        test('returns false', () => {
+          expect(writeUserConfig()).toBeFalsy()
+        });
+      })
+    });
+  });
+
+  describe('when isWriteable(CONFIG_FILE_PATH) is false', () => {
+    beforeEach(() => {
+      helpers.isWriteable = jest.fn(() => false);
+    });
+
+    test('returns false', () => {
+      expect(writeUserConfig()).toBeFalsy();
+    });
+  });
 });
