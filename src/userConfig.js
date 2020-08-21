@@ -20,8 +20,8 @@ let USER_CONFIG;
  * @returns {Object}
  */
 function getUserConfig() {
-  if (!USER_CONFIG) {
-    USER_CONFIG = model.readUserConfig();
+  if (!model.USER_CONFIG) {
+    model.USER_CONFIG = model.readUserConfig();
   }
 
   /**
@@ -30,7 +30,7 @@ function getUserConfig() {
    * @constant
    * @type {String}
    */
-  const APP_ROOT_FOLDER = path.resolve(USER_CONFIG.appRootFolder);
+  const APP_ROOT_FOLDER = path.resolve(model.USER_CONFIG.appRootFolder);
 
   /**
    * Base folders to scan
@@ -38,7 +38,7 @@ function getUserConfig() {
    * @constant
    * @type {String}
    */
-  const BASE_FOLDERS = USER_CONFIG.baseFolders;
+  const BASE_FOLDERS = model.USER_CONFIG.baseFolders;
 
   /**
    * Team base folder
@@ -46,7 +46,7 @@ function getUserConfig() {
    * @constant
    * @type {String}
    */
-  const TEAM_FOLDER = USER_CONFIG.teamFolder;
+  const TEAM_FOLDER = model.USER_CONFIG.teamFolder;
 
   /**
    * Anchor heading level
@@ -56,7 +56,7 @@ function getUserConfig() {
    * @constant
    * @type {String}
    */
-  const TODO_ANCHOR_HEADING_LEVEL = USER_CONFIG.todoAnchorHeadingLevel;
+  const TODO_ANCHOR_HEADING_LEVEL = model.USER_CONFIG.todoAnchorHeadingLevel;
 
   /**
    * Anchor heading for a section of todos in a README.md file.
@@ -64,7 +64,7 @@ function getUserConfig() {
    * @constant
    * @type {String}
    */
-  const TODO_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${USER_CONFIG.todoAnchor}`;
+  const TODO_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${model.USER_CONFIG.todoAnchor}`;
 
   /**
    * Todo group heading level
@@ -75,7 +75,7 @@ function getUserConfig() {
    * @constant
    * @type {String}
    */
-  const TODO_GROUP_HEADING_LEVEL = USER_CONFIG.todoGroupHeadingLevel;
+  const TODO_GROUP_HEADING_LEVEL = model.USER_CONFIG.todoGroupHeadingLevel;
 
   return {
     APP_ROOT_FOLDER,
@@ -139,6 +139,7 @@ function writeUserConfig(configuration) {
 const model = {
   CONFIG_FILE_NAME,
   CONFIG_FILE_PATH,
+  USER_CONFIG,
   getUserConfig,
   readUserConfig,
   writeUserConfig
