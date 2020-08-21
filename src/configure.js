@@ -2,6 +2,7 @@ const os = require('os');
 const path = require('path');
 const readline = require('readline');
 const userConfig = require('./userConfig');
+const { RUNNING_TESTS } = require('./constants');
 
 const questions = [
   {
@@ -184,8 +185,9 @@ async function configure() {
   rl.close();
 }
 
-if (require.main === module) {
-  configure();
+// Do not run this while testing
+if (!RUNNING_TESTS) {
+  model.configure();
 }
 
 module.exports = model;
