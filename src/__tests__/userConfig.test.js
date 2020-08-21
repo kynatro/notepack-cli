@@ -16,7 +16,31 @@ const userConfigData = {
 jest.mock('fs');
 
 describe('getUserConfig()', () => {
+  beforeEach(() => {
+    userConfigModel.USER_CONFIG = undefined;
+  });
 
+  test('returns an Object shape', () => {
+    userConfigModel.readUserConfig = jest.fn(() => userConfigData);
+
+    expect(getUserConfig()).toEqual(expect.objectContaining({
+      APP_ROOT_FOLDER: expect.any(String),
+      BASE_FOLDERS: expect.any(Array),
+      TEAM_FOLDER: expect.any(String),
+      TODO_ANCHOR_HEADING_LEVEL: expect.any(String),
+      TODO_ANCHOR: expect.any(String),
+      TODO_GROUP_HEADING_LEVEL: expect.any(String)
+    }));
+  });
+
+  test('only calls readUserConfig() once', () => {
+    userConfigModel.readUserConfig = jest.fn(() => userConfigData);
+
+    getUserConfig();
+    getUserConfig();
+
+    expect(userConfigModel.readUserConfig).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('readUserConfig()', () => {
