@@ -37,9 +37,25 @@ const MATCH_PATTERN = "-\\s?\\[ \\]"
  */
 const RUNNING_IN_BACKGROUND = Boolean(argv.background);
 
+/**
+ * Is the script being run by testing
+ * 
+ * Detects if jest is running or not
+ * 
+ * @constant
+ * @type {Boolean}
+ */
+/* eslint no-undef: "off" */
+let RUNNING_TESTS = false;
+try {
+  RUNNING_TESTS = jest !== 'undefined';
+} catch(e) {
+}
+
 module.exports = {
   CONFIG_FILE_NAME,
   FILE_IGNORE,
   MATCH_PATTERN,
-  RUNNING_IN_BACKGROUND
+  RUNNING_IN_BACKGROUND,
+  RUNNING_TESTS
 }
