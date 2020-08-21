@@ -1,9 +1,10 @@
 const chokidar = require('chokidar');
 const fs = require('fs');
 const path = require('path');
-const { updateTodosForFolders, updateTodosForPerson } = require('./updateTodos');
-const { getTeamMembers } = require('./team');
-const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./constants');
+const updateTodos = require('./updateTodos');
+const team = require('./team');
+const { RUNNING_TESTS } = require('./constants');
+const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./userConfig').getUserConfig();
 
 // Watch location based on user specified APP_ROOT_FOLDER
 const watcher = chokidar.watch('**/*.md', { cwd: APP_ROOT_FOLDER });
