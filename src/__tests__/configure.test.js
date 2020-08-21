@@ -148,7 +148,7 @@ describe('confirmConfiguration()', () => {
 
     rl.question = jest.fn().mockImplementationOnce((message, cb) => { cb(answer) });
     
-    userConfig.writeUserConfig = jest.fn(() => Promise.resolve());
+    userConfig.writeUserConfig = jest.fn(() => true);
   });
 
   test('returns a Promise', () => {
@@ -176,7 +176,7 @@ describe('confirmConfiguration()', () => {
   });
 
   test('rejects when writeUserConfig is unsuccessful', () => {
-    userConfig.writeUserConfig = jest.fn(() => { throw Error(); });
+    userConfig.writeUserConfig = jest.fn(() => false);
 
     expect(confirmConfiguration(configuration, rl).catch((err) => {
       expect(true).toBeTruthy();
@@ -219,7 +219,7 @@ describe('configure()', () => {
     const RL_INTERFACE = readline.createInterface();
     readline.createInterface = jest.fn(() => RL_INTERFACE);
 
-    userConfig.writeUserConfig = jest.fn(() => Promise.resolve());
+    userConfig.writeUserConfig = jest.fn(() => true);
     configureModel.askQuestion = jest.fn(() => Promise.resolve());
     configureModel.confirmConfiguration = jest.fn(() => Promise.resolve());
   });

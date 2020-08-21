@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { isWriteable } = require('./helpers');
+const helpers = require('./helpers');
 const { CONFIG_FILE_NAME } = require('./constants');
 const CONFIG_FILE_PATH = path.resolve(os.homedir(), CONFIG_FILE_NAME);
 let USER_CONFIG;
@@ -121,22 +121,19 @@ function readUserConfig() {
  *
  * @param {Object} configuration JSON configuration Object
  * 
- * @return {Promise}
+ * @return {Boolean}
  */
 function writeUserConfig(configuration) {
-  return new Promise((resolve, reject) => {
-    if (isWriteable(CONFIG_FILE_PATH)) {
-      fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(configuration, null, 2), (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(`${CONFIG_FILE_PATH} written successfully!`);
-        }
-      })
-    } else {
-      reject(`${CONFIG_FILE_PATH} is not writeable.`);
+  if (helpers.isWriteable(CONFIG_FILE_PATH)) {
+    try {
+      fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configuration, null, 2));
+      return true;
+    } catch (err) {
+      console.error(err);
     }
-  });
+  }
+
+  return false;
 }
 
 const model = {
