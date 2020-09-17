@@ -4,6 +4,12 @@ const path = require('path');
 
 const fs = jest.createMockFromModule('fs');
 
+const constants = {
+  F_OK: true,
+  R_OK: true,
+  W_OK: true
+};
+
 // This is a custom function that our tests can use during setup to specify
 // what the files on the "mock" filesystem should look like when any of the
 // `fs` APIs are used.
@@ -69,6 +75,7 @@ function unlinkSync() {
 
 fs.__setMockFiles = __setMockFiles;
 fs.accessSync = accessSync;
+fs.constants = constants;
 fs.existsSync = existsSync;
 fs.readdirSync = readdirSync;
 fs.readFileSync = readFileSync;
