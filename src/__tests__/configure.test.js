@@ -20,6 +20,22 @@ beforeEach(() => {
   console.error = jest.fn();
 });
 
+describe('first run', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  test('should not call configure() when RUNNING_TESTS is truthy', () => {
+    jest.mock('../configure', () => ({
+      configure: jest.fn()
+    }));
+
+    const configureModel = require('../configure');
+    
+    expect(configureModel.configure).not.toHaveBeenCalled();
+  });
+});
+
 describe('questions', () => {
   let answer;
   let configuration = {};
