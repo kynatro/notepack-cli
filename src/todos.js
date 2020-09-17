@@ -33,6 +33,21 @@ function formatAssignment(assignment) {
 }
 
 /**
+ * Format todo for logging to the console
+ * 
+ * Colorizes @mentions in todos and underlines Markdown emphasis
+ * 
+ * @param {String} todo Todo string to format
+ */
+function formatLogTodo(todo) {
+  return todo
+    // Format emphasis Markdown as underlined
+    .replace(/_(.*?)_/, '\x1b[4m$1\x1b[0m')
+    // Format user as bold and blue
+    .replace(/@[^\s]+/, '\x1b[34m\x1b[1m$&\x1b[0m')
+}
+
+/**
  * Get the todo assignment
  *
  * Get the individual assigned to the todo. Maps @mention keywords for known
@@ -203,16 +218,10 @@ function logTodos(todos = [], assignedTo) {
   }, {});
 
   Object.keys(groups).forEach((group) => {
-    console.log('\x1b[32m', `\n${group}:`, '\x1b[0m');
+    console.log(`\x1b[32m\n${group}:\x1b[0m`);
 
     groups[group].forEach((todo) => {
-      const formattedTodo = todo
-        // Format emphasis Markdown as underlined
-        .replace(/_(.*?)_/, "\x1b[4m$1\x1b[0m")
-        // Format user as bold and blue
-        .replace(/@[^\s]+/, "\x1b[34m\x1b[1m$&\x1b[0m")
-
-      console.log(`* ${formattedTodo}`);
+      console.log(`* ${formatLogTodo(todo)}`);
     })
   })
 }
@@ -239,9 +248,11 @@ module.exports = {
   default: getTodos,
   cleanTodo,
   formatAssignment,
+  formatLogTodo,
   getAssignment,
   getAssignmentAlias,
   getTodos,
   getTodosAssignedTo,
-  groupName
+  groupName,
+  logTodos
 };

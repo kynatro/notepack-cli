@@ -114,19 +114,19 @@ describe('writeUserConfig()', () => {
     describe('when writeFileSync() is unsuccessful', () => {
       beforeEach(() => {
         fs.writeFileSync = jest.fn(() => { throw Error() });
+      });
 
-        test('logs an error', () => {
-          console.error = jest.fn();
+      test('logs an error', () => {
+        console.error = jest.fn();
 
-          writeUserConfig();
+        writeUserConfig();
 
-          expect(console.error).toHaveBeenCalled();
-        });
+        expect(console.error).toHaveBeenCalled();
+      });
 
-        test('returns false', () => {
-          expect(writeUserConfig()).toBeFalsy()
-        });
-      })
+      test('returns false', () => {
+        expect(writeUserConfig()).toBeFalsy()
+      });
     });
   });
 

@@ -17,6 +17,42 @@ beforeEach(() => {
   rl = readline.createInterface();
 
   console.log = jest.fn();
+  console.error = jest.fn();
+});
+
+describe('first run', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  test('should not call configure() when RUNNING_TESTS is truthy', () => {
+    jest.mock('../configure', () => ({
+      configure: jest.fn()
+    }));
+
+    const configureModel = require('../configure');
+    
+    expect(configureModel.configure).not.toHaveBeenCalled();
+  });
+});
+
+describe('questions', () => {
+  let answer;
+  let configuration = {};
+  let key;
+
+  describe('baseFolders', () => {
+    key = 'baseFolders';
+    answer = 'Foo, Bar';
+
+    test('callback converts comma delimited strings to an Array', () => {
+      const question = questions.find(question => question.key === key);
+
+      question.callback({ answer, configuration, key });
+
+      expect(configuration[key]).toEqual(expect.arrayContaining(['Foo', 'Bar']));
+    })
+  });
 });
 
 describe('defaultAppRootFolder()', () => {
@@ -246,5 +282,45 @@ describe('configure()', () => {
     await configure();
 
     expect(configureModel.confirmConfiguration).toHaveBeenCalled();
+  });
+
+  describe('when confirmConfiguration resolves', () => {
+    const confirmationMessage = 'confirmConfiguration resolution message';
+
+    beforeEach(() => {
+      configureModel.confirmConfiguration = jest.fn(() => Promise.resolve(confirmationMessage));
+    });
+
+    test('resolution message from confirmConfiguration is displayed', async () => {
+      await configure();
+
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining(confirmationMessage));
+    });
+
+    test('notepack watch instructions are displayed', async () => {
+      await configure();
+
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('notepack watch'));
+    });
+  });
+
+  describe('when confirmConfiguration rejects', () => {
+    const errMessage = 'error message';
+
+    beforeEach(() => {
+      configureModel.confirmConfiguration = jest.fn(() => Promise.reject(errMessage));
+    });
+
+    test('error message from confirmConfiguration is displayed', async () => {
+      await configure();
+
+      expect(console.error).toHaveBeenCalledWith(expect.stringContaining(errMessage));
+    });
+
+    test('notepack configure instructions are displayed', async () => {
+      await configure();
+
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('notepack configure'));
+    });
   });
 });

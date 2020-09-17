@@ -5,7 +5,7 @@ const notepackConfigMock = require('../__mocks__/notepack_config.mock')
 userConfig.getUserConfig = jest.fn().mockReturnValue(notepackConfigMock);
 
 const path = require('path');
-const { cleanTodo, formatAssignment, getAssignment, getAssignmentAlias, getTodos, getTodosAssignedTo, groupName } = require('../todos');
+const { cleanTodo, formatAssignment, formatLogTodo, getAssignment, getAssignmentAlias, getTodos, getTodosAssignedTo, groupName, logTodos } = require('../todos');
 const { MOCK_FILE_INFO, NOTES } = require('../__mocks__/notes.mock');
 const { APP_ROOT_FOLDER } = notepackConfigMock;
 
@@ -178,5 +178,66 @@ describe('groupName()', () => {
     const nodePathname = path.join(APP_ROOT_FOLDER, grandParentFolder, parentFolder, fileName);
 
     expect(groupName(nodePathname)).toEqual(`${grandParentFolder} / ${parentFolder}`);
+  });
+});
+
+describe('formatLogTodo', () => {
+  const mention = '@John';
+  const emphasis = 'immediately';
+  const todo = `${mention} todo _${emphasis}_`;
+  const formattedTodo = formatLogTodo(todo);
+
+  test('Colorizes and bolds @mentions', () => {
+    expect(formattedTodo).toEqual(expect.stringContaining(`\x1b[34m\x1b[1m${mention}\x1b[0m`));
+  });
+
+  test('Underlines emphasis', () => {
+    expect(formattedTodo).toEqual(expect.stringContaining(`\x1b[4m${emphasis}\x1b[0m`));
+  });
+});
+
+describe('logTodos()', () => {
+  const { todos } = require('../__mocks__/todos.mock');
+  const groupNames = todos.map(todo => todo.groupName);
+
+  beforeEach(() => {
+    console.log = jest.fn();
+  });
+
+  test('Logs an assigned to title when assignedTo argument is supplied', () => {
+    const assignedTo = 'John';
+
+    logTodos(todos, assignedTo);
+
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining(`Todos assigned to ${assignedTo}`));
+  });
+
+  test('Logs all todos title when no assignedTo argument is supplied', () => {
+    logTodos(todos);
+
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('All todos'));
+  });
+
+  test('Logs each groupName', () => {
+    logTodos(todos);
+
+    groupNames.forEach(groupName => {
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining(groupName));
+    });
+  });
+
+  test('Logs each todo after each groupName', () => {
+    logTodos(todos);
+
+    groupNames.forEach(groupName => {
+      const groupNameCallIndex = console.log.mock.calls.findIndex(args => `${args[0]}`.includes(groupName));
+      const groupTodos = todos.filter(todo => todo.groupName === groupName);
+
+      groupTodos.forEach((groupTodo, i) => {
+        const groupTodoCallIndex = console.log.mock.calls.findIndex(args => `${args[0]}`.includes(formatLogTodo(cleanTodo(groupTodo.todo))));
+
+        expect(groupTodoCallIndex).toEqual(groupNameCallIndex + (i + 1));
+      });
+    });
   });
 });
