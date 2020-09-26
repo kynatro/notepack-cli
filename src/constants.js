@@ -9,6 +9,14 @@ const { argv } = require('yargs');
 const CONFIG_FILE_NAME = '.notepack_config';
 
 /**
+ * File to track watching status
+ * 
+ * @constant
+ * @type {String}
+ */
+const WATCHING_FILE_NAME = '.notepack_watching';
+
+/**
  * Invalid file type patterns
  *
  * @constant
@@ -57,5 +65,6 @@ module.exports = {
   FILE_IGNORE,
   MATCH_PATTERN,
   RUNNING_IN_BACKGROUND,
-  RUNNING_TESTS
+  RUNNING_TESTS,
+  WATCHING_FILE_NAME
 }
