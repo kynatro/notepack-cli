@@ -1,9 +1,10 @@
 const chokidar = require('chokidar');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const updateTodos = require('./updateTodos');
 const team = require('./team');
-const { RUNNING_TESTS } = require('./constants');
+const { RUNNING_TESTS, WATCHING_FILE_NAME } = require('./constants');
 const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./userConfig').getUserConfig();
 
 // Watch location based on user specified APP_ROOT_FOLDER
@@ -26,7 +27,7 @@ const model = {
  * @requires path
  */
 function exitScript() {
-  const watchingFilePath = path.join(path.dirname(__dirname), '.WATCHING')
+  const watchingFilePath = path.join(os.homedir(), WATCHING_FILE_NAME)
 
   // Gate removal of file for testing
   if (fs.existsSync(watchingFilePath)) {

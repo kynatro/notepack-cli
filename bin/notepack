@@ -14,7 +14,7 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 SCRIPTS_PATH="$DIR/../src"
 
 # Filepath for active watch process monitoring
-WATCHING_PATH="$DIR/../.WATCHING"
+WATCHING_PATH="$HOME/.notepack_watching"
 
 is_configured () {
   if [ -f "$HOME/.notepack_config" ]
