@@ -14,6 +14,7 @@ const watchModel = require('../watch');
 const { exitScript } = require('../watch');
 const { BASE_FOLDERS, TEAM_FOLDER } = notepackConfigMock;
 const { watcher, updateTodosForAll, updateTodosForMe } = watchModel;
+const { WATCHING_FILE_NAME } = require('../constants');
 
 jest.mock('fs');
 jest.mock('process');
@@ -100,15 +101,15 @@ describe('exitScript()', () => {
     fs.unlinkSync = jest.fn();
   });
 
-  test('removes .WATCHING file when it exists', () => {
+  test(`removes ${WATCHING_FILE_NAME} file when it exists`, () => {
     fs.existsSync = jest.fn(() => true);
 
     exitScript();
 
-    expect(fs.unlinkSync).toHaveBeenCalledWith(expect.stringContaining('.WATCHING'));
+    expect(fs.unlinkSync).toHaveBeenCalledWith(expect.stringContaining(WATCHING_FILE_NAME));
   });
 
-  test('does not remove .WATCHING file when it is not found', () => {
+  test(`does not remove ${WATCHING_FILE_NAME} file when it is not found`, () => {
     fs.existsSync = jest.fn(() => false);
 
     exitScript();
