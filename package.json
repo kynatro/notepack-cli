@@ -4,7 +4,7 @@
   "description": "Local note taking CLI helpers",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node scripts/postinstall.js",
+    "postinstall": "./bin/notepack postinstall",
     "test": "jest"
   },
   "bin": {
