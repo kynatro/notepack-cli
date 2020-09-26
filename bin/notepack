@@ -16,12 +16,24 @@ SCRIPTS_PATH="$DIR/../src"
 # Filepath for active watch process monitoring
 WATCHING_PATH="$HOME/.notepack_watching"
 
+# Filepath for configuration
+CONFIG_PATH="$HOME/.notepack_config"
+
+configure () {
+  node $SCRIPTS_PATH/configure.js
+}
+
+# Alternate to "wait" that allows waiting for processes that are not a child
+# of the current shell. Only works on processes the user has permissions to
+# terminate (which works well enough for our purposes).
+detatched_wait () {
+  while kill -0 $1 2> /dev/null; do sleep 0.1; done;
+}
+
 is_configured () {
-  if [ -f "$HOME/.notepack_config" ]
+  if [ -f $CONFIG_PATH ]
     then return 0
-    else
-      echo -e "Please configure your Notepack first by running \x1b[1;33m\x1b[1mnotepack configure\x1b[0m"
-      return 1
+    else return 1
   fi
 }
 
@@ -29,6 +41,52 @@ is_watching () {
   if [ -f $WATCHING_PATH ]
     then return 0
     else return 1
+  fi
+}
+
+postinstall () {
+  if is_configured
+    then restart_watcher
+    else
+      configure
+  fi
+}
+
+restart_watcher () {
+  if is_watching
+    then
+      echo -e "\x1b[1;33mRestarting watcher...\x1b[0m"
+      pid=$(< $WATCHING_PATH)
+      kill $pid
+      detatched_wait $pid
+      start_watching
+  fi
+}
+
+speak_configuration_status () {
+  if is_configured
+    then return 0
+    else
+      echo -e "Please configure your Notepack first by running \x1b[1;33m\x1b[1mnotepack configure\x1b[0m"
+      return 1
+  fi
+}
+
+speak_todos () {
+  if [ $1 ]
+    then
+      node $SCRIPTS_PATH/todos.js --asignedTo $1
+    else
+      node $SCRIPTS_PATH/todos.js
+  fi
+}
+
+speak_watching_status () {
+  if is_watching
+    then
+      echo -e "\x1b[0;34mWatching notes in the background (pid: $(< $WATCHING_PATH))\x1b[0m"
+    else
+      echo -e "Not watching notes. Run \x1b[1;33m\x1b[1mnotepack watch\x1b[0m to start watching."
   fi
 }
 
@@ -49,20 +107,11 @@ stop_watching () {
   fi
 }
 
-todos () {
-  if [ $1 ]
-    then
-      node $SCRIPTS_PATH/todos.js --asignedTo $1
-    else
-      node $SCRIPTS_PATH/todos.js
-  fi
-}
-
-update() {
+update_todos () {
   node $SCRIPTS_PATH/updateTodos.js
 }
 
-watch() {
+watch () {
   if is_watching
     then
       if ps -p $(< $WATCHING_PATH) > /dev/null
@@ -79,21 +128,27 @@ watch() {
 
 case "$1" in
 "configure")
-  node $SCRIPTS_PATH/configure.js
+  configure
+  ;;
+"postinstall")
+  postinstall
+  ;;
+"status")
+  speak_watching_status
   ;;
 "stop")
-  if is_configured; then stop_watching; fi
+  speak_configuration_status && stop_watching
   ;;
 "todos")
-  if is_configured; then todos $2; fi
+  speak_configuration_status && speak_todos $2
   ;;
 "update")
-  if is_configured; then update; fi
+  speak_configuration_status && update_todos
   ;;
 "watch")
-  if is_configured; then watch; fi
+  speak_configuration_status && watch
   ;;
 *)
-  if is_configured; then todos; fi
+  speak_configuration_status && speak_todos
   ;;
 esac
