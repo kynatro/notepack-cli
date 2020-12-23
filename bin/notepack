@@ -75,6 +75,25 @@ speak_configuration_status () {
   fi
 }
 
+speak_help () {
+  echo -e "\x1b[34m\x1b[1mNotePack $VERSION\x1b[0m\n"
+  echo -e "\x1b[32mUsage:\x1b[0m notepack <cmd> [args]\n"
+  echo -e "\x1b[32mCommands:\x1b[0m"
+  echo -e "  configure                Configure NotePack"
+  echo -e "  status                   Display the status of the watcher"
+  echo -e "  stop                     Stop watching for file changes"
+  echo -e "  todos                    Display all open todos"
+  echo -e "  todos mine               Display open todos assigned to the project owner"
+  echo -e "  todos [team_member]      Display open todos assigned to a team member"
+  echo -e "  update                   Update all README.md files (folders and team)"
+  echo -e "  watch                    Watch file changes in the background"
+  echo -e "\n\x1b[32mOptions:\x1b[0m"
+  echo -e "  --help                   Show this help (alias: h)"
+  echo -e "  --version                Show version number (alias: v)"
+  echo -e "\n\x1b[34mFind out more about NotePack on GitHub at:\x1b[0m"
+  echo -e "https://github.com/kynatro/notepack-cli"
+}
+
 speak_todos () {
   if [ $1 ]
     then
@@ -155,10 +174,14 @@ case "$1" in
 "watch")
   speak_configuration_status && watch
   ;;
+"--help" | "-h")
+  speak_help
+  ;;
 "--version" | "-v")
   speak_version
   ;;
 *)
-  speak_configuration_status && speak_todos
+  echo -e "\x1b[0;31m$@ is not a valid argument!\n\x1b[0m"
+  speak_help
   ;;
 esac
