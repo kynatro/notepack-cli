@@ -142,14 +142,6 @@ Configure NotePack
 > notepack configure
 ```
 
-### notepack
-
-By default, executing `notepack` will simply return a list of all the open todos ordered by file date. Same as running `notepack todos`
-
-```sh
-> notepack
-```
-
 ### notepack todos mine
 
 Display open todos assigned to the project owner.
@@ -196,4 +188,20 @@ Stop watching for file changes.
 
 ```sh
 > notepack stop
+```
+
+### notepack --help
+
+(alias `-h`) Display help for the command line
+
+```sh
+> notepack --help
+```
+
+### notepack --version
+
+(alias `-v`) Display the running version of NotePack.
+
+```sh
+> notepack --version
 ```
