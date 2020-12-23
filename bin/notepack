@@ -19,6 +19,9 @@ WATCHING_PATH="$HOME/.notepack_watching"
 # Filepath for configuration
 CONFIG_PATH="$HOME/.notepack_config"
 
+# Notepack version
+VERSION="$( cat "$DIR/../package.json" | grep -Eo '"version"[^,]*' | grep -Eo '[^:]*$' )"
+
 configure () {
   node $SCRIPTS_PATH/configure.js
 }
@@ -82,7 +85,7 @@ speak_todos () {
 }
 
 speak_version () {
-  cat "$DIR/../package.json" | grep -Eo '"version"[^,]*' | grep -Eo '[^:]*$'
+  echo $VERSION
 }
 
 speak_watching_status () {
