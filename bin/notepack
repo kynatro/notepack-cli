@@ -20,7 +20,7 @@ WATCHING_PATH="$HOME/.notepack_watching"
 CONFIG_PATH="$HOME/.notepack_config"
 
 # Notepack version
-VERSION="$( cat "$DIR/../package.json" | grep -Eo '"version"[^,]*' | grep -Eo '[^:]*$' )"
+VERSION="$( cat "$DIR/../package.json" | grep -Eo '"version"[^,]*' | sed -n 's/^.*version\": \"\([^\"]*\).*$/\1/p' )"
 
 configure () {
   node $SCRIPTS_PATH/configure.js
