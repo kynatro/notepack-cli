@@ -81,6 +81,10 @@ speak_todos () {
   fi
 }
 
+speak_version () {
+  cat "$DIR/../package.json" | grep -Eo '"version"[^,]*' | grep -Eo '[^:]*$'
+}
+
 speak_watching_status () {
   if is_watching
     then
@@ -147,6 +151,9 @@ case "$1" in
   ;;
 "watch")
   speak_configuration_status && watch
+  ;;
+"--version" | "-v")
+  speak_version
   ;;
 *)
   speak_configuration_status && speak_todos
