@@ -46,7 +46,15 @@ You can specify specific folders in your notes project to ensure you aren't scra
 The folder where your team member notes are kept; default is `Team`. The expectation is that sub-folders exist named after each team member within this folder and each team member sub-folder has a `README.md` file.
 
 **Anchor title for todos section**  
-The title of the todos section of the `README.md` file. If this section does not exist yet in the file it will be appended to the end of the file. If this section already exists it will be replaced bracketing the start and end of the section between the heading levels specifed in the next question...
+The title of the todos section of the `README.md` file. If this section does not exist yet in the file it will be appended to the end of the file. If this section already exists it will be replaced bracketing the start and end of the section between the heading levels specified in the _Anchor heading level for todos and recent files sections_ question.
+
+**Anchor title for recent files section**  
+The title of the recent files section of the `README.md` file. If this section does not exist yet in the file it will be appended to the end of the file. If this section already exists it will be replaced bracketing the start and end of the section between the heading levels specified in the _Anchor heading level for todos and recent files sections_ question.
+
+> **NOTE:** At this time, recent files will only work on Mac OS and Linux environments as it has an external dependency on the `find` shell command.
+
+**Show this many recent files**  
+How many recent files should be shown in the recent files section of the `README.md` file.
 
 **Anchor heading level for todos section**  
 The heading level for the todos section; default is `##` (an H2). This is used for bracketing where the todos section begins and ends (before the next `##` for example).
@@ -172,6 +180,14 @@ Watch file changes in the background and automatically update `README.md` files 
 
 ```sh
 > notepack watch
+```
+
+### notepack recent
+
+Display a list of the files that have been recently modified.
+
+```sh
+> notepack recent
 ```
 
 ### notepack status

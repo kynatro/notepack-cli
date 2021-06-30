@@ -4,6 +4,7 @@ const path = require('path');
 const os = require('os');
 const updateTodos = require('./updateTodos');
 const team = require('./team');
+const recentFiles = require('./recentFiles');
 const { RUNNING_TESTS, WATCHING_FILE_NAME } = require('./constants');
 const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./userConfig').getUserConfig();
 
@@ -14,6 +15,7 @@ const model = {
   exitScript,
   updateTodosForAll,
   updateTodosForMe,
+  updateRecentFiles,
   watcher
 };
 
@@ -71,6 +73,18 @@ function updateTodosForMe() {
 }
 
 /**
+ * Update recent file list
+ *
+ * Updates the list of recently modified/created files in the root README.md file
+ *
+ * @requires notepack-cli/recentFiles.updateRecentFiles
+ */
+function updateRecentFiles() {
+  console.log('Updating recent files');
+  recentFiles.updateRecentFiles();
+}
+
+/**
  * Monitor change events from chokidar watcher
  * 
  * Updates todos for a user or every(one|thing) depending on the file path
@@ -99,6 +113,8 @@ watcher.on('change', (path) => {
       console.log('Updating todos for folders...');
       updateTodos.updateTodosForFolders(BASE_FOLDERS);
     }
+
+    model.updateRecentFiles();
   }
 })
 

@@ -26,9 +26,20 @@ const questions = [
     text: 'Anchor title for todos section'
   },
   {
+    defaultValue: 'Recent Files',
+    key: 'recentFilesAnchor',
+    text: 'Anchor title for recent files section'
+  },
+  {
+    callback: ({ answer, configuration, key }) => configuration[key] = parseInt(answer, 10),
+    defaultValue: '5',
+    key: 'recentFilesCount',
+    text: 'Show this many recent files'
+  },
+  {
     defaultValue: '##',
     key: 'todoAnchorHeadingLevel',
-    text: 'Anchor heading level for todos section'
+    text: 'Anchor heading level for todos and recent files sections'
   },
   {
     defaultValue: '####',
