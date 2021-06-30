@@ -82,7 +82,7 @@ function getRecentFiles(limit = RECENT_FILES_COUNT, lastNDays = RECENT_FILES_DAY
  *
  * @returns {String}
  */
- function relativeRecentFilePath(readmeFilePath, filePath) {
+function relativeRecentFilePath(readmeFilePath, filePath) {
   const relativeFilePath = path.relative(path.dirname(readmeFilePath), filePath);
   return encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
 }
