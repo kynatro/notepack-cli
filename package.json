@@ -23,7 +23,7 @@
   "dependencies": {
     "chokidar": "^3.5.2",
     "front-matter": "^4.0.2",
-    "yargs": "^15.4.1"
+    "yargs": "^17.0.1"
   },
   "devDependencies": {
     "eslint": "^7.16.0",

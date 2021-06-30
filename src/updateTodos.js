@@ -1,6 +1,8 @@
 const { getTodos, getTodosAssignedTo, getAssignmentAlias } = require('./todos');
 const { getTeamMembers } = require('./team');
-const { argv } = require('yargs');
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
+const argv = yargs(hideBin(process.argv)).argv;
 const fs = require('fs');
 const path = require('path');
 const { APP_ROOT_FOLDER, BASE_FOLDERS, TODO_GROUP_HEADING_LEVEL, TEAM_FOLDER, TODO_ANCHOR, TODO_ANCHOR_HEADING_LEVEL } = require('./userConfig').getUserConfig();
