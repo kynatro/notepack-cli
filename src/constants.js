@@ -57,13 +57,25 @@ const RUNNING_IN_BACKGROUND = Boolean(argv.background);
 let RUNNING_TESTS = false;
 try {
   RUNNING_TESTS = jest !== 'undefined';
-} catch(e) {
 }
+/* eslint no-empty: "off" */
+catch(e) {}
+
+/**
+ * Calendar day window to constrain find command for recent files
+ *
+ * Optimize the find command to search within files modified in the last N days.
+ *
+ * @constant
+ * @type {Number}
+ */
+const RECENT_FILES_DAY_WINDOW = 7;
 
 module.exports = {
   CONFIG_FILE_NAME,
   FILE_IGNORE,
   MATCH_PATTERN,
+  RECENT_FILES_DAY_WINDOW,
   RUNNING_IN_BACKGROUND,
   RUNNING_TESTS,
   WATCHING_FILE_NAME

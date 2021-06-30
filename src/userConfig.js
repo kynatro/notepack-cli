@@ -67,6 +67,22 @@ function getUserConfig() {
   const TODO_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${model.USER_CONFIG.todoAnchor}`;
 
   /**
+   * Anchor heading for a section of recently updated files in a README.md file.
+   *
+   * @constant
+   * @type {String}
+   */
+  const RECENT_FILES_ANCHOR = `${TODO_ANCHOR_HEADING_LEVEL} ${model.USER_CONFIG.recentFilesAnchor}`;
+
+  /**
+   * How many recent files should be logged in the README.md file.
+   *
+   * @constant
+   * @type {Number}
+   */
+  const RECENT_FILES_COUNT = model.USER_CONFIG.recentFilesCount || 5;
+
+  /**
    * Todo group heading level
    * 
    * The H tag level for groups of todos. Should be a lower H tag value
@@ -80,6 +96,8 @@ function getUserConfig() {
   return {
     APP_ROOT_FOLDER,
     BASE_FOLDERS,
+    RECENT_FILES_ANCHOR,
+    RECENT_FILES_COUNT,
     TEAM_FOLDER,
     TODO_ANCHOR_HEADING_LEVEL,
     TODO_ANCHOR,
