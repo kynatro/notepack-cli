@@ -9,7 +9,6 @@ function createInterface() {
   };
 };
 
-readline.close = close;
 readline.createInterface = createInterface;
 
 module.exports = readline;
