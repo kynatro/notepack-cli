@@ -80,6 +80,7 @@ speak_help () {
   echo -e "\x1b[32mUsage:\x1b[0m notepack <cmd> [args]\n"
   echo -e "\x1b[32mCommands:\x1b[0m"
   echo -e "  configure                Configure NotePack"
+  echo -e "  recent                   Display recently modified files"
   echo -e "  status                   Display the status of the watcher"
   echo -e "  stop                     Stop watching for file changes"
   echo -e "  todos                    Display all open todos"
@@ -92,6 +93,10 @@ speak_help () {
   echo -e "  --version                Show version number (alias: v)"
   echo -e "\n\x1b[34mFind out more about NotePack on GitHub at:\x1b[0m"
   echo -e "https://github.com/kynatro/notepack-cli"
+}
+
+speak_recent_files () {
+  node $SCRIPTS_PATH/recentFiles.js
 }
 
 speak_todos () {
@@ -158,6 +163,9 @@ case "$1" in
   ;;
 "postinstall")
   postinstall
+  ;;
+"recent")
+  speak_recent_files
   ;;
 "status")
   speak_watching_status

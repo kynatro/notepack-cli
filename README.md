@@ -182,6 +182,14 @@ Watch file changes in the background and automatically update `README.md` files 
 > notepack watch
 ```
 
+### notepack recent
+
+Display a list of the files that have been recently modified.
+
+```sh
+> notepack recent
+```
+
 ### notepack status
 
 Display the status of the watcher.

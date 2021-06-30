@@ -7,6 +7,7 @@ const { RECENT_FILES_DAY_WINDOW, RUNNING_IN_BACKGROUND } = require('./constants'
 const model = {
   default: getRecentFiles,
   getRecentFiles,
+  logRecentFiles,
   updateRecentFiles,
   writeRecentFiles
 };
@@ -87,6 +88,20 @@ function relativeRecentFilePath(readmeFilePath, filePath) {
   return encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
 }
 
+function logRecentFiles(recentFiles, limit = RECENT_FILES_COUNT, lastNDays = RECENT_FILES_DAY_WINDOW) {
+  console.log(`\x1b[1m\x1b[34mRecent ${limit} files from the last ${lastNDays} days:\x1b[0m`);
+  console.log('----------------------------------------------------------');
+
+  recentFiles.forEach((recentFile, index) => {
+    const dirname = path.basename(path.dirname(recentFile.filepath));
+    const filename = recentFile.filepath.replace(APP_ROOT_FOLDER, '')
+      .replace(new RegExp(`^${path.sep}`), '')
+      .replace(`${path.sep}${dirname}${path.sep}`, `${path.sep}\x1b[1m${dirname}\x1b[0m${path.sep}\x1b[32m`);
+    console.log(`\x1b[32m${filename}\x1b[0m`);
+    console.log(`Last modified on: \x1b[33m${recentFile.mtime}\x1b[0m\n`);
+  });
+}
+
 /**
  * Update the recent files list
  *
@@ -158,6 +173,6 @@ ${recentFiles.map(({filepath, filename}) => `* [${filename}](${relativeRecentFil
 
 if (require.main === module) {
   getRecentFiles()
-    .then(data => console.log(data))
+    .then(data => logRecentFiles(data))
     .catch(error => console.error(error));
 }
