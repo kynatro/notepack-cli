@@ -127,6 +127,7 @@ process.on('EXIT', exitScript);
 if (!RUNNING_TESTS) {
   // Start with a fresh update
   model.updateTodosForAll();
+  model.updateRecentFiles();
   updateTodos.updateTodosForFolders(BASE_FOLDERS);
   
   console.log('Watching folders...');
