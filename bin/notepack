@@ -42,7 +42,12 @@ is_configured () {
 
 is_watching () {
   if [ -f $WATCHING_PATH ]
-    then return 0
+    then
+      # Be sure process is actually running
+      if [ -n "$(ps -p $(<$WATCHING_PATH) -o pid=)" ]
+        then return 0
+        else return 1
+      fi
     else return 1
   fi
 }
