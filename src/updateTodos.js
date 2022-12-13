@@ -23,12 +23,12 @@ module.exports = model;
 
 /**
  * Get todo group names
- * 
+ *
  * Iterates through todos and builds a deduped array of groupName values,
  * sorted by file date in descending order.
- * 
+ *
  * @param {Array} todos Todos to parse
- * 
+ *
  * @return {Array}
  */
 function getGroupNames(todos) {
@@ -44,15 +44,15 @@ function getGroupNames(todos) {
 
 /**
  * Get the relative path to a group file
- * 
+ *
  * Returns an encoded relative path to a group file relative to a README.md
  * being written to.
- * 
+ *
  * @param {String} readmeFilePath Base file path to compare filePath to
  * @param {String} groupFilePath Group file path
- * 
+ *
  * @requires path
- * 
+ *
  * @returns {String}
  */
 function groupRelativePath(readmeFilePath, groupFilePath) {
@@ -77,7 +77,7 @@ function groupRelativePath(readmeFilePath, groupFilePath) {
  *
  * @requires path
  * @requires notepack-cli/updateTodos.getGroupNames
- * 
+ *
  * @return {String}
  */
 function groupedTodos(todos, filePath, options = {}) {
@@ -97,10 +97,10 @@ ${groupTodos.map(todo => `- [ ] ${todo.todo}`).join('\n')}`;
 
 /**
  * Determines if a folder is valid for processing
- * 
+ *
  * Rejects folders that contain the word "archive" and folders in the
  * project's TEAM_FOLDER.
- * 
+ *
  * @param {String} nodePathName Folder pathname
  * @returns {Boolean}
  */
