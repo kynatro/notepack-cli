@@ -36,7 +36,13 @@ describe('getGroupNames()', () => {
 });
 
 describe('groupRelativePath()', () => {
-  const groupFilePath = './Project 1/Note 1.md';
+  const UN_ENCODED_CHARS = {
+    '%2F': '/',
+    '%3A': ':',
+    '%2B': '+',
+    '%2C': ','
+  };
+  const groupFilePath = './Project 1/Note 1 + 2: foo, bar.md';
   const result = groupRelativePath(readmeFilePath, groupFilePath);
 
   test('returns a String', () => {
@@ -47,9 +53,13 @@ describe('groupRelativePath()', () => {
     expect(result).toEqual(expect.stringContaining('%20'));
   });
 
-  test('returns an encoded file path with %2F characters un-encoded', () => {
-    expect(result).toEqual(expect.stringContaining('/'));
-    expect(result).toEqual(expect.not.stringContaining('%2F'));
+  Object.keys(UN_ENCODED_CHARS).forEach((encoded) => {
+    const unencoded = UN_ENCODED_CHARS[encoded];
+
+    test(`returns an encoded file path with ${encoded} characters un-encoded`, () => {
+      expect(result).toEqual(expect.stringContaining(unencoded));
+      expect(result).toEqual(expect.not.stringContaining(encoded));
+    });
   });
 });
 

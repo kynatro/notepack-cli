@@ -85,7 +85,11 @@ function getRecentFiles(limit = RECENT_FILES_COUNT, lastNDays = RECENT_FILES_DAY
  */
 function relativeRecentFilePath(readmeFilePath, filePath) {
   const relativeFilePath = path.relative(path.dirname(readmeFilePath), filePath);
-  return encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
+  return encodeURIComponent(relativeFilePath)
+          .replace(/%2F/g, '/')
+          .replace(/%3A/g, ':')
+          .replace(/%2B/g, '+')
+          .replace(/%2C/g, ',');
 }
 
 function logRecentFiles(recentFiles, limit = RECENT_FILES_COUNT, lastNDays = RECENT_FILES_DAY_WINDOW) {

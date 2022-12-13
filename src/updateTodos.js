@@ -57,7 +57,11 @@ function getGroupNames(todos) {
  */
 function groupRelativePath(readmeFilePath, groupFilePath) {
   const relativeFilePath = path.relative(path.dirname(readmeFilePath), path.join(APP_ROOT_FOLDER, groupFilePath));
-  return encodeURIComponent(relativeFilePath).replace(/%2F/g, '/');
+  return encodeURIComponent(relativeFilePath)
+          .replace(/%2F/g, '/')
+          .replace(/%3A/g, ':')
+          .replace(/%2B/g, '+')
+          .replace(/%2C/g, ',');
 }
 
 /**
