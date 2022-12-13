@@ -143,6 +143,10 @@ stop_watching () {
   fi
 }
 
+update_recent_files () {
+  node $SCRIPTS_PATH/updateRecentFiles.js
+}
+
 update_todos () {
   node $SCRIPTS_PATH/updateTodos.js
 }
@@ -182,7 +186,7 @@ case "$1" in
   speak_configuration_status && speak_todos $2
   ;;
 "update")
-  speak_configuration_status && update_todos
+  speak_configuration_status && update_todos && update_recent_files
   ;;
 "watch")
   speak_configuration_status && watch

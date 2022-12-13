@@ -168,8 +168,6 @@ ${recentFiles.map(({filepath, filename}) => `* [${filename}](${relativeRecentFil
   // End of todos chunk to end of file
   chunks.push(src.substring(end).trim());
 
-  console.log(chunks.join('\n\n').trim() + '\n');
-
   fs.writeFileSync(readmeFilePath, chunks.join('\n\n').trim());
 
   return true;
