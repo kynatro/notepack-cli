@@ -132,9 +132,9 @@ describe('updateTodosForFolders()', () => {
 
   test('calls writeTodos for directories with README.md files', () => {
     updateTodosForFolders(['Notes/Projects']);
-    expect(updateTodos.writeTodos).toHaveBeenCalledWith(expect.stringContaining('Project 1/README.md'), expect.any(Array));    
+    expect(updateTodos.writeTodos).toHaveBeenCalledWith(expect.stringContaining('Project 1/README.md'), expect.any(Array));
   });
-  
+
   test('does not call writeTodos for directories with README.md files', () => {
     updateTodosForFolders(['Notes/Projects']);
     expect(updateTodos.writeTodos).not.toHaveBeenCalledWith(expect.stringContaining('Project 2/README.md'), expect.any(Array));
@@ -150,12 +150,12 @@ describe('updateTodosForPerson()', () => {
     updateTodosForPerson('Jane');
     expect(updateTodos.writeTodos).toHaveBeenCalledWith(expect.stringContaining('Jane'), expect.any(Array));
   });
-  
+
   test('calls writeTodos for the project root README when no team member is passed in', () => {
     updateTodosForPerson();
     expect(updateTodos.writeTodos).toHaveBeenCalledWith(path.join(APP_ROOT_FOLDER, 'README.md'), expect.any(Array));
   });
-  
+
   test('calls writeTodos for the project root README when "me" is passed in', () => {
     updateTodosForPerson('me');
     expect(updateTodos.writeTodos).toHaveBeenCalledWith(path.join(APP_ROOT_FOLDER, 'README.md'), expect.any(Array));
@@ -173,7 +173,7 @@ describe('writeTodos()', () => {
 
     expect(writeTodos('README.md', [])).toBeFalsy();
   });
-  
+
   test('logs an error if file is not writable and not running in the background', () => {
     fs.accessSync = jest.fn(() => {
       throw new Error('error');
@@ -185,7 +185,7 @@ describe('writeTodos()', () => {
     writeTodos('README.md', []);
     expect(console.error).toHaveBeenCalled();
   });
-  
+
   test('writes todos to the end of the file if no TODO_ANCHOR can be found', () => {
     fs.accessSync = jest.fn(() => true);
     fs.readFileSync = jest.fn().mockReturnValue('# Start of File\n\n# End of File');

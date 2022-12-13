@@ -123,7 +123,7 @@ function updateRecentFiles(limit = RECENT_FILES_COUNT, lastNDays = RECENT_FILES_
         resolve(writeRecentFiles(data));
       })
       .catch(error => reject(error));
-});
+  });
 }
 
 function writeRecentFiles(recentFiles) {
