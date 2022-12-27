@@ -22,6 +22,10 @@ CONFIG_PATH="$HOME/.notepack_config"
 # Notepack version
 VERSION="$( cat "$DIR/../package.json" | grep -Eo '"version"[^,]*' | sed -n 's/^.*version\": \"\([^\"]*\).*$/\1/p' )"
 
+backup () {
+  node $SCRIPTS_PATH/gitBackup.js
+}
+
 configure () {
   node $SCRIPTS_PATH/configure.js
 }
@@ -167,6 +171,9 @@ watch () {
 }
 
 case "$1" in
+"backup")
+  backup
+  ;;
 "configure")
   configure
   ;;

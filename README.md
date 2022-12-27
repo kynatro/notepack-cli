@@ -142,6 +142,16 @@ An Array of alternate names to refer to a team member by. NotePack will automati
 
 ## CLI
 
+### notepack backup
+
+Backup note files by individually committing each new file with a commit message named after the first `H1` in the file or the name of the file (without any YYYY-MM-DD prefix). Also bulk commits updated files with an "Update todos" commit message.
+
+```sh
+> notepack backup
+```
+
+> Pro-tip: set this command up in a cronjob to happen daily after your workday to always make sure your commit history is kept up-to-date
+
 ### notepack configure
 
 Configure NotePack
