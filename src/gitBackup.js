@@ -143,6 +143,12 @@ async function stageFile(filePath) {
 
   // Process updated files (checked off todos)
   if (updates.length) {
+    // Include the root README.md file (which exists outside BASE_FOLDERS)
+    updates.push({
+      status: STATUS_MODIFIED,
+      filePath: 'README.md'
+    });
+
     await asyncForEach(updates, async (file) => {
       const { filePath } = file;
       await stageFile(filePath);
