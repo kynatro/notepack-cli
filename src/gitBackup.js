@@ -7,12 +7,14 @@ const { APP_ROOT_FOLDER, BASE_FOLDERS } = require('./userConfig').getUserConfig(
 
 const H1_PATTERN = /^# \w+/gim;
 const FILE_NAME_PATTERN = /^[0-9]{4}-[0-9]{2}-[0-9]{2} (.*)$/;
-const STATUS_PATTERN = /^([^\s]+) "?([^"]+)"?$/;
+const STATUS_PATTERN = /^(.{2}) "?([^"]+)"?$/;
 const STATUS_NEW = 'NEW';
 const STATUS_MODIFIED = 'MODIFIED';
+const STATUS_MODIFIED_STAGED = 'MODIFIED STAGED'
 const STATUSES = {
   '??': STATUS_NEW,
-  'M': STATUS_MODIFIED
+  ' M': STATUS_MODIFIED,
+  'M ': STATUS_MODIFIED_STAGED
 };
 
 async function asyncForEach(array, callback) {
@@ -77,7 +79,7 @@ async function getStatuses() {
   }
 
   stdout.split("\n").forEach(line => {
-    const match = line.trim().match(STATUS_PATTERN);
+    const match = line.match(STATUS_PATTERN);
 
     if (match) {
       statuses.push({
