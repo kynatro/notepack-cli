@@ -88,6 +88,7 @@ speak_help () {
   echo -e "\x1b[34m\x1b[1mNotePack $VERSION\x1b[0m\n"
   echo -e "\x1b[32mUsage:\x1b[0m notepack <cmd> [args]\n"
   echo -e "\x1b[32mCommands:\x1b[0m"
+  echo -e "  backup                   Commit individual note files to current git branch"
   echo -e "  configure                Configure NotePack"
   echo -e "  recent                   Display recently modified files"
   echo -e "  status                   Display the status of the watcher"
