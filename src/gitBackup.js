@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const { APP_ROOT_FOLDER, BASE_FOLDERS } = require('./userConfig').getUserConfig();
 
-const H1_PATTERN = /^# \w+/gim;
+const H1_PATTERN = /^# (.+)$/im;
 const FILE_NAME_PATTERN = /^[0-9]{4}-[0-9]{2}-[0-9]{2} (.*)$/;
 const STATUS_PATTERN = /^(.{2}) "?([^"]+)"?$/;
 const STATUS_NEW = 'NEW';
@@ -57,7 +57,7 @@ function generateCommitMessage(filePath) {
 
   // Markdown title
   if (h1) {
-    return h1[0];
+    return h1[1];
   }
 
   // Title embedded in file name
