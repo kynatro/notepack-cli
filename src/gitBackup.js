@@ -78,14 +78,28 @@ async function getStatuses() {
     return;
   }
 
-  stdout.split("\n").forEach(line => {
+  await asyncForEach(stdout.split("\n"), async (line) => {
     const match = line.match(STATUS_PATTERN);
 
     if (match) {
-      statuses.push({
-        status: STATUSES[match[1]],
-        filePath: match[2]
-      });
+      const status = STATUSES[match[1]];
+      const filePath = match[2];
+      const filePathStatus = fs.statSync(path.resolve(APP_ROOT_FOLDER, filePath));
+
+      // Folders in the status output indicate completely un-tracked folders
+      if (filePathStatus.isDirectory()) {
+        fs.readdirSync(filePath).forEach((node) => {
+          statuses.push({
+            status: STATUS_NEW,
+            filePath: path.join(filePath, node)
+          });
+        });
+      } else {
+        statuses.push({
+          status,
+          filePath
+        });
+      }
     }
   });
 
