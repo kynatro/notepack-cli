@@ -102,11 +102,13 @@ async function getStatuses() {
     if (match) {
       const status = STATUSES[match[1]];
       const filePath = match[2];
-      const filePathStatus = fs.statSync(path.resolve(APP_ROOT_FOLDER, filePath));
+      const absPath = path.resolve(APP_ROOT_FOLDER, filePath);
+      const filePathStatus = fs.existsSync(absPath) ? fs.statSync(absPath) : false;
+      const isDirectory = filePathStatus ? filePathStatus.isDirectory() : false;
 
       // Folders in the status output indicate completely un-tracked folders
-      if (filePathStatus.isDirectory()) {
-        fs.readdirSync(filePath).forEach((node) => {
+      if (isDirectory) {
+        fs.readdirSync(absPath).forEach((node) => {
           statuses.push({
             status: STATUS_NEW,
             filePath: path.join(filePath, node)
