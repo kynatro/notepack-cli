@@ -39,6 +39,16 @@ async function commitStaged(message) {
 }
 
 /**
+ * Escapes the file path to work with exec() command
+ *
+ * @param {String} filePath file path to escape
+ * @returns {String}
+ */
+function escapedFilePath(filePath) {
+  return filePath.replace(/(\s|&|'+|\(|\))/g, '\\$1');
+}
+
+/**
  * Generate commit message
  *
  * Generates a commit message for the file at filePath. Message is generated in
@@ -112,6 +122,15 @@ async function getStatuses() {
   return statuses;
 }
 
+async function isIgnored(filePath) {
+  try {
+    await exec(`git -C ${APP_ROOT_FOLDER} check-ignore ${escapedFilePath(filePath)}`);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
 /**
  * Stage a file
  *
@@ -159,13 +178,16 @@ async function stageFile(filePath) {
   // Individually commit new files
   await asyncForEach(filtered, async (file) => {
     const { status, filePath } = file;
+    const fileIsIgnored = await isIgnored(filePath);
 
-    if (status == STATUS_NEW) {
-      const commitMessage = generateCommitMessage(filePath);
-      await stageFile(filePath);
-      await commitStaged(commitMessage);
-    } else {
-      updates.push(file);
+    if (!fileIsIgnored) {
+      if (status == STATUS_NEW) {
+        const commitMessage = generateCommitMessage(filePath);
+        await stageFile(filePath);
+        await commitStaged(commitMessage);
+      } else {
+        updates.push(file);
+      }
     }
   });
 
