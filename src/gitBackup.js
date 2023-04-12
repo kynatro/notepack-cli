@@ -145,8 +145,7 @@ async function isIgnored(filePath) {
  * @returns {String} oid value for use in a commit
  */
 async function stageFile(filePath) {
-  const escapeFilePath = filePath.replace(/(\s|&+|\(|\))/g, '\\$1');
-  const { stderr } = await exec(`git -C ${APP_ROOT_FOLDER} add ${escapeFilePath}`);
+  const { stderr } = await exec(`git -C ${APP_ROOT_FOLDER} add ${escapedFilePath(filePath)}`);
 
   if (stderr) {
     console.error(stderr);
