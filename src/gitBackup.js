@@ -11,11 +11,13 @@ const TEXT_EXTENSIONS_PATTERN = /md|txt$/;
 const STATUS_PATTERN = /^(.{2}) "?([^"]+)"?$/;
 const STATUS_NEW = 'NEW';
 const STATUS_MODIFIED = 'MODIFIED';
-const STATUS_MODIFIED_STAGED = 'MODIFIED STAGED'
+const STATUS_MODIFIED_STAGED = 'MODIFIED STAGED';
+const STATUS_DELETED = 'DELETED';
 const STATUSES = {
   '??': STATUS_NEW,
   ' M': STATUS_MODIFIED,
-  'M ': STATUS_MODIFIED_STAGED
+  'M ': STATUS_MODIFIED_STAGED,
+  ' D': STATUS_DELETED
 };
 
 async function asyncForEach(array, callback) {
