@@ -1,6 +1,6 @@
 {
   "name": "notepack-cli",
-  "version": "1.0.0-prerelease.23",
+  "version": "1.0.0-prerelease.24",
   "description": "Local note taking CLI helpers",
   "main": "index.js",
   "scripts": {
