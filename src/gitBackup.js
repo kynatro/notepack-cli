@@ -7,6 +7,7 @@ const { APP_ROOT_FOLDER, BASE_FOLDERS } = require('./userConfig').getUserConfig(
 
 const H1_PATTERN = /^# (.+)$/im;
 const FILE_NAME_PATTERN = /^[0-9]{4}-[0-9]{2}-[0-9]{2} (.*)$/;
+const TEXT_EXTENSIONS_PATTERN = /md|txt$/;
 const STATUS_PATTERN = /^(.{2}) "?([^"]+)"?$/;
 const STATUS_NEW = 'NEW';
 const STATUS_MODIFIED = 'MODIFIED';
@@ -51,13 +52,18 @@ async function commitStaged(message) {
  * @returns {String}
  */
 function generateCommitMessage(filePath) {
-  const fileData = fs.readFileSync(path.resolve(APP_ROOT_FOLDER, filePath));
+  const extName = path.extname(filePath);
   const basename = path.basename(filePath, '.md');
-  const h1 = `${fileData}`.match(H1_PATTERN);
 
-  // Markdown title
-  if (h1) {
-    return h1[1];
+  // Only process text files for headings
+  if (TEXT_EXTENSIONS_PATTERN.test(extName)) {
+    const fileData = fs.readFileSync(path.resolve(APP_ROOT_FOLDER, filePath));
+    const h1 = `${fileData}`.match(H1_PATTERN);
+
+    // Markdown title
+    if (h1) {
+      return h1[1];
+    }
   }
 
   // Title embedded in file name
