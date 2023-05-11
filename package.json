@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/kynatro/notepack-cli#readme",
   "engines": {
-    "node": "^14.x",
-    "npm": "^6.x"
+    "node": ">14.x",
+    "npm": ">6.x"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
@@ -41,7 +41,7 @@
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-      "ecmaVersion": 2017
+      "ecmaVersion": 2020
     }
   }
 }
