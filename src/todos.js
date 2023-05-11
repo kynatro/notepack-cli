@@ -23,6 +23,35 @@ function cleanTodo(todo) {
 }
 
 /**
+ * Extract todos from content
+ *
+ * Finds todos in Markdown content based on MATCH_PATTERN and returns
+ * an Array of todos with assignment
+ *
+ * @param {String} content Markdown compatible content
+ * @return {Array}
+ */
+function extractTodos(content) {
+  const matches = content.match(new RegExp(`${MATCH_PATTERN}.*`, 'g'));
+  const frontMatter = fm(content);
+  let todos = [];
+
+  if (matches && !frontMatter.attributes.excludeTodos) {
+    matches.forEach((match) => {
+      const assignedTo = getAssignment(match);
+
+      todos.push({
+        todo: cleanTodo(match),
+        assignedTo,
+        assignedToAlias: getAssignmentAlias(assignedTo)
+      });
+    });
+  }
+
+  return todos;
+}
+
+/**
  * Format assignment for easier matching
  *
  * Removes any @ mention prefixes, replaces . with spaces, trims white space.
@@ -36,9 +65,9 @@ function formatAssignment(assignment) {
 
 /**
  * Format todo for logging to the console
- * 
+ *
  * Colorizes @mentions in todos and underlines Markdown emphasis
- * 
+ *
  * @param {String} todo Todo string to format
  */
 function formatLogTodo(todo) {
@@ -100,7 +129,7 @@ function getAssignmentAlias(assignment) {
  *   groupName {String} A group name for the todo
  *   todo {String} The cleaned todo
  *   assignedTo {String} The individual the todo is assigned to
- * 
+ *
  * @requires fm
  * @requires fs
  * @requires path
@@ -120,31 +149,23 @@ function getTodos(pathScope = '', todos = []) {
     if (isValidNode(node)) {
       if (nodeStats.isFile() && extname === '.md') {
         const src = fs.readFileSync(nodePathname, 'utf8');
-        const matches = src.match(new RegExp(`${MATCH_PATTERN}.*`, 'g'));
-        const frontMatter = fm(src);
+        let fileDate = node.match(/^\d{4}(-\d{2}){0,2}/);
+        if (fileDate && fileDate.length) {
+          fileDate = fileDate[0];
+        }
+        const extractedTodos = extractTodos(src);
 
-        if (matches && !frontMatter.attributes.excludeTodos) {
-          matches.forEach((match) => {
-            let fileDate = node.match(/^\d{4}(-\d{2}){0,2}/);
-            if (fileDate && fileDate.length) {
-              fileDate = fileDate[0];
-            }
-
-            const assignedTo = getAssignment(match);
-
+        extractedTodos.forEach((extractedTodo) => {
             todos.push({
+              ...extractedTodo,
               id: id++,
               filePath: nodePathname.replace(APP_ROOT_FOLDER, '.'),
               fileName: node,
               groupName: groupName(nodePathname),
-              todo: cleanTodo(match),
-              assignedTo,
-              assignedToAlias: getAssignmentAlias(assignedTo),
               fileCreateTime: nodeStats.birthtime || nodeStats.ctime,
               fileDate
-            });
           });
-        }
+        });
       } else if (nodeStats.isDirectory() && !nodePathname.toLowerCase().includes('archive')) {
         todos = getTodos(nodePathname, todos);
       }
@@ -158,7 +179,7 @@ function getTodos(pathScope = '', todos = []) {
  * Get todos assigned to an individual
  *
  * Returns a filtered set of todos whose assignedTo or assignedToAlias matches
- * the assignment argument. Uses alias for comparison to allow any alias or 
+ * the assignment argument. Uses alias for comparison to allow any alias or
  * actual name to be passed as the assignment argument.
  *
  * @param {String} assignment Assignment value
@@ -249,6 +270,7 @@ if (require.main === module) {
 module.exports = {
   default: getTodos,
   cleanTodo,
+  extractTodos,
   formatAssignment,
   formatLogTodo,
   getAssignment,
