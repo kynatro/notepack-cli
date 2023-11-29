@@ -10,6 +10,7 @@ const { MOCK_FILE_INFO } = require('../__mocks__/notes.mock');
 
 const team = require('../team');
 const updateTodos = require('../updateTodos');
+const recentFiles = require('../recentFiles');
 const watchModel = require('../watch');
 const { exitScript } = require('../watch');
 const { BASE_FOLDERS, TEAM_FOLDER } = notepackConfigMock;
@@ -25,6 +26,7 @@ beforeEach(() => {
   console.log = jest.fn();
   updateTodos.updateTodosForFolders = jest.fn();
   updateTodos.updateTodosForPerson = jest.fn();
+  recentFiles.updateRecentFiles = jest.fn();
 });
 
 describe('watcher', () => {
