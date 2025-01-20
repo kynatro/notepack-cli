@@ -8,6 +8,8 @@ This folder houses an example of what a note project may look like. Note the org
 #### [Project 1 / 2020-07-03 Note 1](Notes/Project%201/2020-07-03%20Note%201.md)
 - [ ] Write an automated testing suite
 
+## Recent Files
+
 ## Next Section
 
 This section will not be overwritten as it shares the same heading hierarchy (`##` or `H2`) as the `## Open Todos` section.
