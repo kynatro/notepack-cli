@@ -9,7 +9,11 @@ const { RUNNING_TESTS, WATCHING_FILE_NAME } = require('./constants');
 const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./userConfig').getUserConfig();
 
 // Watch location based on user specified APP_ROOT_FOLDER
-const watcher = chokidar.watch('**/*.md', { cwd: APP_ROOT_FOLDER });
+// const watcher = chokidar.watch('**/*.md', { cwd: APP_ROOT_FOLDER });
+const watcher = chokidar.watch('.', {
+  ignored: (path, stats) => stats?.isFile() && !path.endsWith('.md'),
+  cwd: APP_ROOT_FOLDER
+});
 
 const model = {
   exitScript,
