@@ -6,5 +6,6 @@ module.exports = {
   TEAM_FOLDER: "Team",
   TODO_ANCHOR_HEADING_LEVEL: '##',
   TODO_ANCHOR: '## Open Todos',
-  TODO_GROUP_HEADING_LEVEL: '####'
+  TODO_GROUP_HEADING_LEVEL: '####',
+  RECENT_FILES_ANCHOR: '## Recent Files'
 }
