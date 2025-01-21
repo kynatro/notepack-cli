@@ -6,6 +6,7 @@ const updateTodos = require('./updateTodos');
 const team = require('./team');
 const recentFiles = require('./recentFiles');
 const { RUNNING_TESTS, WATCHING_FILE_NAME } = require('./constants');
+const { updateTodosFromReadme } = require('./updateTodosFromReadme');
 const { APP_ROOT_FOLDER, BASE_FOLDERS, TEAM_FOLDER } = require('./userConfig').getUserConfig();
 
 // Watch location based on user specified APP_ROOT_FOLDER
@@ -20,6 +21,7 @@ const model = {
   updateTodosForAll,
   updateTodosForMe,
   updateRecentFiles,
+  updateTodosForReadme,
   watcher
 };
 
@@ -88,6 +90,11 @@ function updateRecentFiles() {
   recentFiles.updateRecentFiles();
 }
 
+function updateTodosForReadme(filePath) {
+  console.log('Updating todos for README:', filePath);
+  updateTodosFromReadme(path.join(APP_ROOT_FOLDER, filePath));
+}
+
 /**
  * Monitor change events from chokidar watcher
  * 
@@ -100,12 +107,14 @@ function updateRecentFiles() {
  * @requires notepace/updateTodos.updateTodosForPerson
  * @requires notepace/updateTodos.updateTodosForFolders
  */
-watcher.on('change', (path) => {
-  // Prevent infinte loop
-  if (!path.includes('README.md')) {
+watcher.on('change', (filePath) => {
+  // Process todo completion on README files
+  if (filePath.includes('README.md')) {
+    model.updateTodosForReadme(filePath);
+  } else {
     // Execute specific team member update for files in a team member folder
-    if (path.includes(TEAM_FOLDER)) {
-      const teamMember = path.replace(`${TEAM_FOLDER}/`, '').split('/')[0];
+    if (filePath.includes(TEAM_FOLDER)) {
+      const teamMember = filePath.replace(`${TEAM_FOLDER}/`, '').split('/')[0];
       console.log(`Updating todos for ${teamMember}`);
       updateTodos.updateTodosForPerson(teamMember);
       model.updateTodosForMe();
