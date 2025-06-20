@@ -39,14 +39,14 @@ function getFileTodoGroups(src) {
 }
 
 function parseTodoStr(todoStr) {
-    const pattern = new RegExp(`^${TODO_GROUP_HEADING_LEVEL} \\[(?<titlePath>[^\\]]+)\\]\\((?<filePath>[^\\)]+)\\)`, 'img')
+    const pattern = new RegExp(`^${TODO_GROUP_HEADING_LEVEL} \\[(?<titlePath>[^\\]]+)\\]\\((?<filePath>.+)\\)$`, 'img')
     const matches = todoStr.matchAll(pattern);
     let groups = [];
-    
+
     if (!matches) {
         return groups;
     }
-    
+
     const matchesArr = matches.toArray();
 
     matchesArr.forEach((match, i) => {
@@ -61,7 +61,7 @@ function parseTodoStr(todoStr) {
             const [nextMatchStr] = next;
             end = todoStr.indexOf(nextMatchStr);
         }
-        
+
         const group = todoStr.substring(start, end).trim();
         const items = group.split('\n');
         const completed = items.filter(item => item.startsWith('- [x]'));
@@ -79,7 +79,8 @@ function parseTodoStr(todoStr) {
 }
 
 function updateFile(filePath, completed) {
-    const src = fs.readFileSync(filePath, 'utf8');
+  console.log(filePath);
+  const src = fs.readFileSync(filePath, 'utf8');
     let updated = src;
 
     completed.forEach(complete => {
@@ -94,6 +95,8 @@ function updateTodosFromReadme(readmePath) {
     const basePath = path.dirname(readmePath);
     const src = fs.readFileSync(readmePath, 'utf8');
     const todoGroups = getFileTodoGroups(src);
+
+    console.log(todoGroups);
 
     todoGroups.forEach(({ filePath, completed }) => {
         if (completed.length) {
